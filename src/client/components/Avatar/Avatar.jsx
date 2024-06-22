@@ -24,7 +24,7 @@ import { ACCOUNTS_UI_PROFILE_IMAGE_UPDATE, UI_ONLINE_STATUS_UPDATE } from 'serve
 import helpers from 'lib/helpers'
 
 class Avatar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.onlineBubbleRef = React.createRef()
@@ -34,12 +34,12 @@ class Avatar extends React.Component {
     this.onOnlineStatusUpdate = this.onOnlineStatusUpdate.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.showOnlineBubble && this.props.userId)
       this.props.socket.on(UI_ONLINE_STATUS_UPDATE, this.onOnlineStatusUpdate)
   }
 
-  componentDidUpdate (prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.showOnlineBubble && this.props.showOnlineBubble && this.props.userId) {
       // Let's release the event just in case, so we don't double bind.
       this.props.socket.off(UI_ONLINE_STATUS_UPDATE, this.onOnlineStatusUpdate)
@@ -47,11 +47,11 @@ class Avatar extends React.Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.socket.off(UI_ONLINE_STATUS_UPDATE, this.onOnlineStatusUpdate)
   }
 
-  onOnlineStatusUpdate (data) {
+  onOnlineStatusUpdate(data) {
     if (this.onlineBubbleRef.current && this.props.userId) {
       const bubble = this.onlineBubbleRef.current
       bubble.classList.remove('user-online')
@@ -76,25 +76,25 @@ class Avatar extends React.Component {
     }
   }
 
-  onMouseOver () {
+  onMouseOver() {
     if (this.overlayRef.current && this.overlayRef.current.classList.contains('uk-hidden')) {
       this.overlayRef.current.classList.remove('uk-hidden')
     }
   }
 
-  onMouseOut () {
+  onMouseOut() {
     if (this.overlayRef.current && !this.overlayRef.current.classList.contains('uk-hidden'))
       this.overlayRef.current.classList.add('uk-hidden')
   }
 
-  onUploadImageClicked (e) {
+  onUploadImageClicked(e) {
     e.preventDefault()
     if (this.imageUploadInput.current) {
       this.imageUploadInput.current.click('click')
     }
   }
 
-  onImageInputChange (e) {
+  onImageInputChange(e) {
     e.preventDefault()
     if (this.imageUploadInput.current.value === '') return
     const formData = new FormData()
@@ -119,7 +119,7 @@ class Avatar extends React.Component {
       })
   }
 
-  generateColor () {
+  generateColor() {
     const getHashOfString = str => {
       let hash = 0
       for (let i = 0; i < str.length; i++) {
@@ -153,7 +153,7 @@ class Avatar extends React.Component {
     return HSLtoString(generateHSL(this.props.showAsNameInitialsName))
   }
 
-  generateInitials () {
+  generateInitials() {
     const splitName = this.props.showAsNameInitialsName.split(' ')
     let name = '-'
     if (splitName.length > 0 && splitName[0].length > 0) {
@@ -164,7 +164,7 @@ class Avatar extends React.Component {
     return name
   }
 
-  render () {
+  render() {
     const {
       style,
       image,
@@ -199,6 +199,7 @@ class Avatar extends React.Component {
           style={wrapperStyle}
           onMouseOver={() => this.onMouseOver()}
           onMouseOut={() => this.onMouseOut()}
+          aria-label="Avatar container"
         >
           {enableImageUpload && (
             <>
@@ -210,6 +211,7 @@ class Avatar extends React.Component {
                   hidden={true}
                   accept={'image/*'}
                   onChange={e => this.onImageInputChange(e)}
+                  aria-label="Upload Image"
                 />
               </form>
               <div
@@ -232,6 +234,7 @@ class Avatar extends React.Component {
                   cursor: 'pointer',
                   zIndex: 100
                 }}
+                aria-hidden="true"
                 onClick={e => this.onUploadImageClicked(e)}
               >
                 <i className={'material-icons'} style={{ color: '#fff' }}>
@@ -252,6 +255,8 @@ class Avatar extends React.Component {
                 width: size,
                 color: 'white'
               }}
+              role="img"
+              aria-label={`Profile picture as initials: ${this.generateInitials()}`}
             >
               <span style={{ fontSize: 18, fontWeight: 400 }}>{this.generateInitials()}</span>
             </div>
@@ -261,7 +266,7 @@ class Avatar extends React.Component {
               className='profile-pic uk-border-circle'
               style={{ height: size, width: size }}
               src={`/uploads/users/${image || 'defaultProfile.jpg'}`}
-              alt=''
+              alt={`Profile picture of the user`}
             />
           )}
           {showOnlineBubble && (
@@ -274,6 +279,8 @@ class Avatar extends React.Component {
                 'uk-border-circle'
               )}
               style={{ height: bubbleSize, width: bubbleSize }}
+              role="status"
+              aria-label={`User is ${showLargerBubble ? 'online' : 'offline'}`}
             />
           )}
         </div>
