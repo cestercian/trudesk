@@ -27,6 +27,7 @@ class BaseModal extends React.Component {
       modal: null
     }
     this.clearModal = this.clearModal.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
   componentDidMount () {
@@ -36,10 +37,44 @@ class BaseModal extends React.Component {
       },
       () => {
         this.state.modal.show()
+        $(this.modal).focus()
         $(this.modal).on('hide.uk.modal', this.clearModal)
+        this.focusableElements = this.modal.querySelectorAll('a[href], button, textarea, input, select')
+        this.firstFocusableElement = this.focusableElements[0]
+        this.lastFocusableElement = this.focusableElements[this.focusableElements.length - 1]
+        this.modal.addEventListener('keydown', this.handleKeyDown)
       }
     )
   }
+
+  componentWillUnmount() {
+    if (this.state.modal) {
+      $(this.modal).off('hide.uk.modal', this.clearModal)
+      this.modal.removeEventListener('keydown', this.handleKeyDown)
+    }
+  }
+
+  handleKeyDown(e) {
+    const isTabPressed = e.key === 'Tab' || e.keyCode === 9
+
+    if (!isTabPressed) {
+      return
+    }
+
+    if (e.shiftKey) {
+      if (document.activeElement === this.firstFocusableElement) {
+        e.preventDefault()
+        this.lastFocusableElement.focus()
+      }
+    } else {
+      if (document.activeElement === this.lastFocusableElement) {
+        e.preventDefault()
+        this.firstFocusableElement.focus()
+      }
+    }
+  }
+
+
 
   show () {
     if (this.state.modal) this.state.modal.show()
@@ -60,6 +95,9 @@ class BaseModal extends React.Component {
         className={'uk-modal' + (this.props.parentExtraClass ? ' ' + this.props.parentExtraClass : '')}
         ref={i => (this.modal = i)}
         data-modal-tag={this.props.modalTag}
+        tabIndex={-1}
+        aria-label='Modal Dialog'
+        role='dialog'
       >
         <div
           className={

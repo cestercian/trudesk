@@ -246,7 +246,7 @@ class StepWizard extends React.Component {
     const { title, subtitle, cancelButtonText } = this.props
 
     return (
-      <div ref={this.container} className='uk-grid uk-margin-small-bottom uk-hidden'>
+      <div ref={this.container} className='uk-grid uk-margin-small-bottom uk-hidden' aria-label="Accounts Import Steps">
         <div className='uk-width-1-1'>
           <div className='panel trupanel nopadding no-hover-shadow' style={{ position: 'relative', minHeight: 265 }}>
             <div className='left'>

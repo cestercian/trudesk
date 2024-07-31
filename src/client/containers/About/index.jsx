@@ -35,8 +35,8 @@ class AboutContainer extends React.Component {
           )}
         </TitleContext.Consumer>
         <PageContent extraClass={clsx('bt', 'about-section')} padding={0} paddingBottom={50}>
-          <PageTitle title={'About'} shadow={false} />
-          <section style={{ margin: '15px 25px' }}>
+          <PageTitle title={'About'} shadow={false} id="page-title"/>
+          <section style={{ margin: '15px 25px' }} aria-label="About Section">
             <div
               className={'mt-5 banner'}
               style={{
@@ -48,6 +48,7 @@ class AboutContainer extends React.Component {
                 borderRadius: 5,
                 alignItems: 'center'
               }}
+              role="banner"
             >
               <i className='material-icons' style={{ marginRight: 10 }}>
                 info
@@ -226,8 +227,9 @@ class AboutContainer extends React.Component {
                           link: release.get('html_url')
                         })
                       }}
+                      aria-label={`View Changelog button for ${release.get('name')}`}
                     >
-                      <i className={'material-icons'}>assignment</i>
+                      <i className={'material-icons'} aria-hidden="true">assignment</i>
                       View Changelog
                     </button>
                   </div>

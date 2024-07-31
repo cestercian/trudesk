@@ -57,7 +57,7 @@ FormWithAuth.propTypes = {
   data: PropTypes.object,
   headers: PropTypes.object,
   children: PropTypes.any.isRequired,
-  onCompleted: PropTypes.func.isRequired,
+  onCompleted: PropTypes.func.isRequired,FormWithAuth
   onError: PropTypes.func,
   onBeforeSend: PropTypes.func
 }

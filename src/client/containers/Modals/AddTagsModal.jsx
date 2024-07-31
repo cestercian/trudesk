@@ -97,11 +97,12 @@ class AddTagsModal extends React.Component {
 
     return (
       <BaseModal options={{ bgclose: false }}>
-        <div className={'uk-clearfix'}>
-          <h5 style={{ fontWeight: 300 }}>Add Tags</h5>
+        <div className={'uk-clearfix'} aria-labelledby="modal-title">
+          <h5 id="modal-title" style={{ fontWeight: 300 }}>Add Tags</h5>
           <div>
             <form className='nomargin' onSubmit={e => this.onSubmit(e)}>
               <div className='search-container'>
+              <label htmlFor='tags' className='sr-only'>Tags</label>
                 <select
                   name='tags'
                   id='tags'
@@ -110,6 +111,7 @@ class AddTagsModal extends React.Component {
                   data-placeholder=' '
                   data-noresults='No Tags Found for '
                   ref={r => (this.select = r)}
+                  aria-label='Select tags'
                 >
                   {mappedTags.map(tag => (
                     <option key={tag.value} value={tag.value}>

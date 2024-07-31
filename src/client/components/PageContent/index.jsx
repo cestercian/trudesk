@@ -30,7 +30,7 @@ class PageContent extends React.Component {
         className={'page-content no-border-top full-height scrollable ' + (this.props.extraClass || '')}
         style={{ padding: this.props.padding }}
       >
-        <div style={{ paddingBottom: this.props.paddingBottom }}>{this.props.children}</div>
+        <div style={{ paddingBottom: this.props.paddingBottom }} aria-labelledby='page-title'>{this.props.children}</div>
       </div>
     )
   }

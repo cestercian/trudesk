@@ -89,11 +89,11 @@ class AddPriorityToTypeModal extends React.Component {
             <h2>Add Priorities</h2>
             <span>Please select the priorities you wish to add to type: {type.get('name')}</span>
           </div>
-          <div className='priority-loop zone'>
+          <div className='priority-loop zone' role='list'>
             {this.getPriorities().map(priority => {
               if (some(type.get('priorities').toJS(), priority.toObject())) {
                 return (
-                  <div key={priority.get('_id')} className={'z-box uk-clearfix'}>
+                  <div key={priority.get('_id')} className={'z-box uk-clearfix'} role='listitem'>
                     <div className='uk-float-left'>
                       <h5 style={{ color: priority.get('htmlColor'), fontWeight: 'bold' }}>{priority.get('name')}</h5>
                       <p className={'uk-text-muted'}>
@@ -101,7 +101,7 @@ class AddPriorityToTypeModal extends React.Component {
                       </p>
                     </div>
                     <div className='uk-float-right'>
-                      <i className='material-icons uk-text-success mt-10 mr-15' style={{ fontSize: '28px' }}>
+                      <i className='material-icons uk-text-success mt-10 mr-15' style={{ fontSize: '28px' }} aria-label="Checked">
                         check
                       </i>
                     </div>
@@ -109,7 +109,7 @@ class AddPriorityToTypeModal extends React.Component {
                 )
               } else {
                 return (
-                  <div key={priority.get('_id')} className={'z-box uk-clearfix'}>
+                  <div key={priority.get('_id')} className={'z-box uk-clearfix'} role='listitem'>
                     <div className='uk-float-left'>
                       <h5 style={{ color: priority.get('htmlColor'), fontWeight: 'bold' }}>{priority.get('name')}</h5>
                       <p className={'uk-text-muted'}>

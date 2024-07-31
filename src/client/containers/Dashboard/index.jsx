@@ -85,6 +85,7 @@ class DashboardContainer extends React.Component {
                     ]}
                     defaultValue={'30'}
                     onSelectChange={e => this.onTimespanChange(e)}
+                    aria-label="Select Time Span"
                   />
                 </div>
               </div>

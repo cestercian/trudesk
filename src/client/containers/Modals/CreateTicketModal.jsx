@@ -43,12 +43,12 @@ class CreateTicketModal extends React.Component {
   @observable selectedPriority = ''
   issueText = ''
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchTicketTypes()
     this.props.getTagsWithPage({ limit: -1 })
     this.props.fetchGroups()
@@ -64,18 +64,18 @@ class CreateTicketModal extends React.Component {
     )
   }
 
-  componentDidUpdate () {}
+  componentDidUpdate() {}
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.defaultTicketTypeWatcher) this.defaultTicketTypeWatcher()
   }
 
-  onTicketTypeSelectChange (e) {
+  onTicketTypeSelectChange(e) {
     this.priorityWrapper.classList.add('hide')
     this.priorityLoader.classList.remove('hide')
     axios
       .get(`/api/v1/tickets/type/${e.target.value}`)
-      .then(res => {
+      .then((res) => {
         const type = res.data.type
         if (type && type.priorities) {
           this.priorities = orderBy(type.priorities, ['migrationNum'])
@@ -89,18 +89,18 @@ class CreateTicketModal extends React.Component {
           }, 500)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         this.priorityLoader.classList.add('hide')
         Log.error(error)
         helpers.UI.showSnackbar(`Error: ${error.response.data.error}`)
       })
   }
 
-  onPriorityRadioChange (e) {
+  onPriorityRadioChange(e) {
     this.selectedPriority = e.target.value
   }
 
-  onFormSubmit (e) {
+  onFormSubmit(e) {
     e.preventDefault()
     const $form = $(e.target)
 
@@ -144,7 +144,7 @@ class CreateTicketModal extends React.Component {
     this.props.createTicket(data)
   }
 
-  onGroupSelectChange (e) {
+  onGroupSelectChange(e) {
     // this.groupAccounts = this.props.groups
     //   .filter(grp => grp.get('_id') === e.target.value)
     //   .first()
@@ -155,74 +155,82 @@ class CreateTicketModal extends React.Component {
     //   .toArray()
   }
 
-  render () {
+  render() {
     const { shared, viewdata } = this.props
     const allowAgentUserTickets =
       viewdata.get('ticketSettings').get('allowAgentUserTickets') &&
       (shared.sessionUser.role.isAdmin || shared.sessionUser.role.isAgent)
 
     const mappedAccounts = this.props.accounts
-      .map(a => {
+      .map((a) => {
         return { text: a.get('fullname'), value: a.get('_id') }
       })
       .toArray()
 
     const mappedGroups = this.props.groups
-      .map(grp => {
+      .map((grp) => {
         return { text: grp.get('name'), value: grp.get('_id') }
       })
       .toArray()
 
-    const mappedTicketTypes = this.props.ticketTypes.toArray().map(type => {
+    const mappedTicketTypes = this.props.ticketTypes.toArray().map((type) => {
       return { text: type.get('name'), value: type.get('_id') }
     })
-    const mappedTicketTags = this.props.ticketTags.toArray().map(tag => {
+    const mappedTicketTags = this.props.ticketTags.toArray().map((tag) => {
       return { text: tag.get('name'), value: tag.get('_id') }
     })
+    console.log(this.props.accounts)
     return (
       <BaseModal {...this.props} options={{ bgclose: false }}>
-        <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
-          <div className='uk-margin-medium-bottom'>
-            <label>Subject</label>
+        <form className={'uk-form-stacked'} onSubmit={(e) => this.onFormSubmit(e)}>
+          <div className="uk-margin-medium-bottom">
+            <label htmlFor="subject-form-input">Subject</label>
             <input
-              type='text'
+              type="text"
+              id="subject-form-input"
               name={'subject'}
               className={'md-input'}
-              data-validation='length'
+              aria-label="Subject"
+              data-validation="length"
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
                 .get('ticketSettings')
                 .get('minSubject')} characters.`}
             />
           </div>
-          <div className='uk-margin-medium-bottom'>
+          <div className="uk-margin-medium-bottom">
             <Grid>
               {allowAgentUserTickets && (
                 <GridItem width={'1-3'}>
-                  <label className={'uk-form-label'}>Owner</label>
+                  <label className={'uk-form-label'} htmlFor="owner-select-input">
+                    Owner
+                  </label>
                   <SingleSelect
                     showTextbox={true}
+                    id={'owner-select-input'}
                     items={mappedAccounts}
                     defaultValue={this.props.shared.sessionUser._id}
                     width={'100%'}
-                    ref={i => (this.ownerSelect = i)}
+                    ref={(i) => (this.ownerSelect = i)}
                   />
                 </GridItem>
               )}
               <GridItem width={allowAgentUserTickets ? '2-3' : '1-1'}>
-                <label className={'uk-form-label'}>Group</label>
-                <SingleSelect
-                  showTextbox={false}
-                  items={mappedGroups}
-                  defaultValue={head(mappedGroups) ? head(mappedGroups).value : ''}
-                  onSelectChange={e => this.onGroupSelectChange(e)}
-                  width={'100%'}
-                  ref={i => (this.groupSelect = i)}
-                />
+                <label className={'uk-form-label'} htmlFor='select-group-form'>Group</label>
+                <div id="select-group-form" aria-label='Select a group'>
+                  <SingleSelect
+                    showTextbox={false}
+                    items={mappedGroups}
+                    defaultValue={head(mappedGroups) ? head(mappedGroups).value : ''}
+                    onSelectChange={(e) => this.onGroupSelectChange(e)}
+                    width={'100%'}
+                    ref={(i) => (this.groupSelect = i)}
+                  />
+                </div>
               </GridItem>
             </Grid>
           </div>
-          <div className='uk-margin-medium-bottom'>
+          <div className="uk-margin-medium-bottom">
             <Grid>
               <GridItem width={'1-3'}>
                 <label className={'uk-form-label'}>Type</label>
@@ -231,10 +239,10 @@ class CreateTicketModal extends React.Component {
                   items={mappedTicketTypes}
                   width={'100%'}
                   defaultValue={this.props.viewdata.get('defaultTicketType').get('_id')}
-                  onSelectChange={e => {
+                  onSelectChange={(e) => {
                     this.onTicketTypeSelectChange(e)
                   }}
-                  ref={i => (this.typeSelect = i)}
+                  ref={(i) => (this.typeSelect = i)}
                 />
               </GridItem>
               <GridItem width={'2-3'}>
@@ -244,15 +252,15 @@ class CreateTicketModal extends React.Component {
                   items={mappedTicketTags}
                   width={'100%'}
                   multiple={true}
-                  ref={i => (this.tagSelect = i)}
+                  ref={(i) => (this.tagSelect = i)}
                 />
               </GridItem>
             </Grid>
           </div>
-          <div className='uk-margin-medium-bottom'>
+          <div className="uk-margin-medium-bottom">
             <label className={'uk-form-label'}>Priority</label>
             <div
-              ref={i => (this.priorityLoader = i)}
+              ref={(i) => (this.priorityLoader = i)}
               style={{ height: '32px', width: '32px', position: 'relative' }}
               className={'hide'}
             >
@@ -262,25 +270,25 @@ class CreateTicketModal extends React.Component {
                 active={true}
               />
             </div>
-            <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'}>
-              {this.priorities.map(priority => {
+            <div ref={(i) => (this.priorityWrapper = i)} className={'uk-clearfix'}>
+              {this.priorities.map((priority) => {
                 return (
                   <div key={priority._id} className={'uk-float-left'}>
                     <span className={'icheck-inline'}>
                       <input
                         id={'p___' + priority._id}
                         name={'priority'}
-                        type='radio'
+                        type="radio"
                         className={'with-gap'}
                         value={priority._id}
-                        onChange={e => {
+                        onChange={(e) => {
                           this.onPriorityRadioChange(e)
                         }}
                         checked={this.selectedPriority === priority._id}
                         data-md-icheck
                       />
                       <label htmlFor={'p___' + priority._id} className={'mb-10 inline-label'}>
-                        <span className='uk-badge' style={{ backgroundColor: priority.htmlColor }}>
+                        <span className="uk-badge" style={{ backgroundColor: priority.htmlColor }}>
                           {priority.name}
                         </span>
                       </label>
@@ -290,12 +298,12 @@ class CreateTicketModal extends React.Component {
               })}
             </div>
           </div>
-          <div className='uk-margin-medium-bottom'>
+          <div className="uk-margin-medium-bottom">
             <span>Description</span>
-            <div className='error-border-wrap uk-clearfix'>
+            <div className="error-border-wrap uk-clearfix">
               <EasyMDE
-                ref={i => (this.issueMde = i)}
-                onChange={val => (this.issueText = val)}
+                ref={(i) => (this.issueMde = i)}
+                onChange={(val) => (this.issueText = val)}
                 allowImageUpload={true}
                 inlineImageUploadUrl={'/tickets/uploadmdeimage'}
                 inlineImageUploadHeaders={{ ticketid: 'uploads' }}
@@ -307,7 +315,7 @@ class CreateTicketModal extends React.Component {
               troubleshooting steps you've taken.
             </span>
           </div>
-          <div className='uk-modal-footer uk-text-right'>
+          <div className="uk-modal-footer uk-text-right">
             <Button text={'Cancel'} flat={true} waves={true} extraClass={'uk-modal-close'} />
             <Button text={'Create'} style={'primary'} flat={true} type={'submit'} />
           </div>
@@ -330,10 +338,10 @@ CreateTicketModal.propTypes = {
   fetchTicketTypes: PropTypes.func.isRequired,
   getTagsWithPage: PropTypes.func.isRequired,
   fetchGroups: PropTypes.func.isRequired,
-  fetchAccountsCreateTicket: PropTypes.func.isRequired
+  fetchAccountsCreateTicket: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   shared: state.shared,
   socket: state.shared.socket,
   viewdata: state.common.viewdata,
@@ -341,7 +349,7 @@ const mapStateToProps = state => ({
   priorities: state.ticketsState.priorities,
   ticketTags: state.tagsSettings.tags,
   groups: state.groupsState.groups,
-  accounts: state.accountsState.accountsCreateTicket
+  accounts: state.accountsState.accountsCreateTicket,
 })
 
 export default connect(mapStateToProps, {
@@ -349,5 +357,5 @@ export default connect(mapStateToProps, {
   fetchTicketTypes,
   getTagsWithPage,
   fetchGroups,
-  fetchAccountsCreateTicket
+  fetchAccountsCreateTicket,
 })(CreateTicketModal)

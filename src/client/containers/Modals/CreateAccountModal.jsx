@@ -142,6 +142,7 @@ class CreateAccountModal extends React.Component {
 
     return (
       <BaseModal parentExtraClass={'pt-0'} extraClass={'p-0 pb-25'}>
+        <div aria-labelledby="create-account-modal-title">
         <div className='user-heading' style={{ minHeight: '130px', background: '#1976d2', padding: '24px' }}>
           <div className='uk-width-1-1'>
             <div style={{ width: '82px', height: '82px', float: 'left', marginRight: '24px', position: 'relative' }}>
@@ -151,7 +152,7 @@ class CreateAccountModal extends React.Component {
             </div>
             <div className='user-heading-content'>
               <h2>
-                <span className={'uk-text-truncate'}>Create Account</span>
+                <span className={'uk-text-truncate'} id="create-account-modal-title">Create Account</span>
                 <span className='sub-heading'>Please provide account details below</span>
               </h2>
             </div>
@@ -160,80 +161,94 @@ class CreateAccountModal extends React.Component {
         <div style={{ margin: '24px 24px 0 24px' }}>
           <form className='uk-form-stacked' onSubmit={e => this.onFormSubmit(e)}>
             <div className='uk-margin-medium-bottom'>
-              <label className='uk-form-label'>Username</label>
+              <label className='uk-form-label' htmlFor='username'>Username</label>
               <input
                 type='text'
+                id='username'
                 className={'md-input'}
                 value={this.username}
                 onChange={e => this.onInputChanged(e, 'username')}
                 data-validation={'length'}
                 data-validation-length={'min4'}
+                aria-label='Username'
                 data-validation-error-msg={'Username must contain at least 4 characters.'}
               />
             </div>
             <div className='uk-margin-medium-bottom uk-clearfix'>
               <div className='uk-float-left' style={{ width: '50%', paddingRight: '20px' }}>
-                <label className={'uk-form-label'}>Name</label>
+                <label htmlFor='name-form' className={'uk-form-label'}>Name</label>
                 <input
                   type='text'
+                  id='name-form'
                   className={'md-input'}
                   value={this.fullname}
                   onChange={e => this.onInputChanged(e, 'fullname')}
                   data-validation={'length'}
                   data-validation-length={'min1'}
+                  aria-label='Name'
                   data-validation-error-msg={'Name must contain at least 1 character.'}
                 />
               </div>
               <div className='uk-float-left uk-width-1-2'>
-                <label className={'uk-form-label'}>Title</label>
+                <label htmlFor='title-form' className={'uk-form-label'}>Title</label>
                 <input
                   type='text'
+                  id='title-form'
                   className={'md-input'}
                   value={this.title}
+                  aria-label='Title'
                   onChange={e => this.onInputChanged(e, 'title')}
                 />
               </div>
             </div>
             <div className='uk-margin-medium-bottom uk-clearfix'>
               <div className='uk-float-left' style={{ width: '50%', paddingRight: '20px' }}>
-                <label className={'uk-form-label'}>Password</label>
+                <label htmlFor='password-from' className={'uk-form-label'}>Password</label>
                 <input
                   type='password'
+                  id='password-form'
                   className={'md-input'}
                   name={'password_confirmation'}
                   value={this.password}
+                  aria-label='Password'
                   onChange={e => this.onInputChanged(e, 'password')}
                 />
               </div>
               <div className='uk-float-left uk-width-1-2'>
-                <label className={'uk-form-label'}>Confirm Password</label>
+                <label htmlFor='confirm-password-form' className={'uk-form-label'}>Confirm Password</label>
                 <input
                   type='password'
                   className={'md-input'}
+                  id='confirm-password-form'
                   name={'password'}
                   value={this.passwordConfirm}
                   onChange={e => this.onInputChanged(e, 'passwordConfirm')}
                   data-validation='confirmation'
+                  aria-label='Confirm Password'
                   data-validation-error-msg={'Password does not match'}
                 />
               </div>
             </div>
             <div className='uk-margin-medium-bottom'>
-              <label className='uk-form-label'>Email</label>
+              <label htmlFor='email-form' className='uk-form-label'>Email</label>
               <input
                 type='email'
+                id='email-form'
                 className={'md-input'}
                 value={this.email}
+                aria-label='Email'
                 onChange={e => this.onInputChanged(e, 'email')}
                 data-validation='email'
               />
             </div>
             <div className='uk-margin-medium-bottom'>
-              <label className={'uk-form-label'}>Role</label>
+              <label htmlFor='role-form' className={'uk-form-label'}>Role</label>
               <SingleSelect
                 items={roles}
                 width={'100'}
                 showTextbox={false}
+                id={'role-form'}
+                aria-label='Role'
                 onSelectChange={e => this.onRoleSelectChange(e)}
               />
               <span
@@ -277,6 +292,8 @@ class CreateAccountModal extends React.Component {
             </div>
           </form>
         </div>
+        </div>
+
       </BaseModal>
     )
   }

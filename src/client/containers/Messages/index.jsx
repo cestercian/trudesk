@@ -331,8 +331,9 @@ class MessagesContainer extends React.Component {
                         className='no-ajaxy'
                         style={{ display: 'block', height: 28 }}
                         onClick={e => this.showUserList(e)}
+                        aria-label='Start Convertation Button'
                       >
-                        <i className='material-icons' style={{ fontSize: '28px', fontWeight: 300 }}>
+                        <i className='material-icons' style={{ fontSize: '28px', fontWeight: 300 }} aria-hidden='true'>
                           add
                         </i>
                       </a>

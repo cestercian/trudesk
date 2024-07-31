@@ -12,7 +12,7 @@
  *  Copyright (c) 2014-2019. All rights reserved.
  */
 
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -90,7 +90,7 @@ class Sidebar extends React.Component {
           data-scroll-opacitymax='0.1'
         >
           <div className='side-nav-container' style={{ minHeight: 'calc(100% - 53px)' }}>
-            <ul className='side-nav'>
+            <ul className='side-nav' tabIndex={1}>
               <Location>
                 {({ location: { pathname } }) => {
                   return menu.map((item, idx) => {

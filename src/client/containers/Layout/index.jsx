@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
                 <TopbarContainer />
                 <Sidebar sessionUser={user} />
 
-                <div id={'page-content'} style={{ marginLeft: 57, position: 'relative' }}>
+                <div id={'page-content'} style={{ marginLeft: 57, position: 'relative' }} aria-live='polite' tabIndex={20}>
                   <Suspense fallback={<div />}>{children}</Suspense>
                 </div>
               </ThemeWrapper>

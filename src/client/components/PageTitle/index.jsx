@@ -31,8 +31,9 @@ class PageTitle extends React.Component {
             !shadow && 'noshadow'
           )}
           style={{ display: 'flex', justifyContent: 'space-between' }}
+          aria-labelledby='page-title'
         >
-          {!breadcrumbs && <p style={{ flexGrow: 1 }}>{title}</p>}
+          {!breadcrumbs && <p style={{ flexGrow: 1 }} id='page-title'>{title}</p>}
           {breadcrumbs && breadcrumbs}
           <div>{rightComponent}</div>
         </div>
