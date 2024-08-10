@@ -101,7 +101,7 @@ class AddPriorityToTypeModal extends React.Component {
                       </p>
                     </div>
                     <div className='uk-float-right'>
-                      <i className='material-icons uk-text-success mt-10 mr-15' style={{ fontSize: '28px' }}>
+                      <i className='material-icons uk-text-success mt-10 mr-15' style={{ fontSize: '28px' }} aria-label="Check">
                         check
                       </i>
                     </div>
@@ -121,12 +121,16 @@ class AddPriorityToTypeModal extends React.Component {
                         type={'button'}
                         className='uk-button uk-button-success mt-10 mr-10 no-ajaxy'
                         onClick={e => this.onAddClick(e, type, priority)}
+                        href='#'
+                        aria-label={`Add ${priority.get('name')} priority to ${type}`}
+                        role='button'
                       >
                         Add
                       </a>
                       <i
                         className='material-icons uk-text-success mt-10 mr-15'
                         style={{ display: 'none', opacity: 0, fontSize: '28px' }}
+                        aria-label="Check"
                       >
                         check
                       </i>
