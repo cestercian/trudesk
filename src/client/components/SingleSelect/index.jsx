@@ -110,18 +110,20 @@ class SingleSelect extends React.Component {
             data-md-selectize-inline
             data-md-selectize-notextbox={this.props.showTextbox ? 'false' : 'true'}
             value={value}
+tabIndex={0}
+            role='listbox'
             onChange={this.onSelectChange}
             disabled={this.props.disabled}
             data-md-selectize-bottom='true'
             multiple={this.props.multiple}
             data-md-selectize-top-offset='-32'
             id={this.props.id}
-            aria-label={this.props['aria-label']}
+            aria-labelledby={`${this.props.id}-label`}
             aria-live="polite"
-            aria-multiselectable={this.props.multiple}
+            aria-multiselectable={this.props.multiple ? "true" : "false"}
           >
             {this.props.items.map((item, index) => (
-              <option key={index} value={item.value}>
+              <option key={index} value={item.value} aria-selected={value.includes(item.value)}>
                 {item.text}
               </option>
             ))}

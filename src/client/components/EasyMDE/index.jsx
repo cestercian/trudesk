@@ -269,7 +269,7 @@ EasyMDE.propTypes = {
 
 EasyMDE.defaultProps = {
   height: '150px',
-  allowImageUpload: false,
+  allowImageUpload: true,
   showStatusBar: true
 }
 
