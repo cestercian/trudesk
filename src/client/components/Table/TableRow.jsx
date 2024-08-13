@@ -16,20 +16,36 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 class TableRow extends React.Component {
-  render () {
-    const { clickable } = this.props
-    const clickableStyle = { cursor: 'pointer' }
-    let style = this.props.style
-    if (clickable) {
-      style = this.props.style ? Object.assign(this.props.style, clickableStyle) : clickableStyle
-    } else {
-      style = this.props.style ? Object.assign(this.props.style, { cursor: 'default' }) : { cursor: 'default' }
-    }
+  render() {
+    const { clickable, onClick, style, className, children } = this.props;
+    const clickableStyle = clickable ? { cursor: 'pointer' } : { cursor: 'default' };
+
+    // Enhanced style management for accessibility
+    const enhancedStyle = {...style, ...clickableStyle};
+
+    // Set tabIndex and role for accessibility
+    const tabIndex = clickable ? 0 : -1; // Make the row focusable only if it's clickable
+    const role = clickable ? 'button' : undefined; // Semantic role for assistive technologies
+    const ariaClickable = clickable ? true : undefined; // ARIA attribute to indicate interactivity
+
     return (
-      <tr className={this.props.className} style={style} onClick={this.props.onClick}>
-        {this.props.children}
+      <tr
+        className={className}
+        style={enhancedStyle}
+        onClick={onClick}
+        tabIndex={tabIndex}
+        role={role}
+        aria-clickable={ariaClickable}
+        onKeyDown={(e) => {
+          // Allow interaction with the Enter key
+          if (e.key === 'Enter' && clickable) {
+            onClick(e);
+          }
+        }}
+      >
+        {children}
       </tr>
-    )
+    );
   }
 }
 
@@ -38,11 +54,14 @@ TableRow.propTypes = {
   onClick: PropTypes.func,
   style: PropTypes.object,
   className: PropTypes.any,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired
 }
 
 TableRow.defaultProps = {
   clickable: false
 }
 
-export default TableRow
+export default TableRow;

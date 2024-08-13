@@ -17,7 +17,7 @@ import PropTypes from 'prop-types'
 
 class TableCell extends React.Component {
   render () {
-    return <td {...this.props}>{this.props.children}</td>
+    return <td tabIndex={0} {...this.props}>{this.props.children}</td>
   }
 }
 
