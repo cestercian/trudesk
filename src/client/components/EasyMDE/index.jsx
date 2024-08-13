@@ -29,7 +29,7 @@ import 'inputInlineAttachment'
 import 'cm4InlineAttachment'
 
 class EasyMDE extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       value: '',
@@ -37,7 +37,7 @@ class EasyMDE extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.easymde = new Easymde({
       element: this.element,
       forceSync: true,
@@ -54,7 +54,16 @@ class EasyMDE extends React.Component {
 
     this.easymde.codemirror.setOption('extraKeys', {
       Tab: false,
-      'Shift-Tab': false
+      'Shift-Tab': false,
+      'Cmd-B': () => this.easymde.toggleBold(),
+      'Cmd-I': () => this.easymde.toggleItalic(),
+      'Cmd-1': () => this.easymde.toggleHeadingSmaller(),
+      'Cmd-2': () => this.easymde.toggleCodeBlock(),
+      'Cmd-3': () => this.easymde.toggleBlockquote(),
+      'Cmd-4': () => this.easymde.toggleUnorderedList(),
+      'Cmd-5': () => this.easymde.toggleOrderedList(),
+      'Cmd-K': () => this.easymde.drawLink(),
+      'Cmd-P': () => this.easymde.togglePreview()
     })
 
     if (this.easymde && this.props.allowImageUpload) {
@@ -101,20 +110,20 @@ class EasyMDE extends React.Component {
     }
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.easymde && this.easymde.value() !== this.state.value) {
       this.easymde.value(this.state.value)
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.easymde) {
       this.easymde.codemirror.off('change')
       this.easymde = null
     }
   }
 
-  static getDerivedStateFromProps (nextProps, state) {
+  static getDerivedStateFromProps(nextProps, state) {
     if (typeof nextProps.defaultValue !== 'undefined') {
       if (!state.loaded && nextProps.defaultValue !== state.value)
         return { value: toMarkdown(nextProps.defaultValue).replace(/\\n/gi, '\n'), loaded: true }
@@ -123,7 +132,7 @@ class EasyMDE extends React.Component {
     return null
   }
 
-  static attachFileDesc (textarea) {
+  static attachFileDesc(textarea) {
     const $el = $(textarea)
     const attachFileDiv = $('<div></div>')
     attachFileDiv
@@ -136,7 +145,7 @@ class EasyMDE extends React.Component {
       .prepend(attachFileDiv)
   }
 
-  onTextareaChanged (value) {
+  onTextareaChanged(value) {
     this.setState({
       value
     })
@@ -144,85 +153,103 @@ class EasyMDE extends React.Component {
     if (this.props.onChange) this.props.onChange(value)
   }
 
-  getEditorText () {
+  getEditorText() {
     return this.state.value
   }
 
-  setEditorText (value) {
+  setEditorText(value) {
     this.setState({
       value: toMarkdown(value)
     })
   }
 
-  static getMdeToolbarItems () {
+  static getMdeToolbarItems() {
     return [
       {
         name: 'bold',
         action: Easymde.toggleBold,
         className: 'material-icons mi-bold no-ajaxy',
-        title: 'Bold'
+        title: 'Bold',
+        accessKey: 'b'
       },
       {
         name: 'italic',
         action: Easymde.toggleItalic,
         className: 'material-icons mi-italic no-ajaxy',
-        title: 'Italic'
+        title: 'Italic',
+        accessKey: 'i'
       },
       {
         name: 'Title',
         action: Easymde.toggleHeadingSmaller,
         className: 'material-icons mi-title no-ajaxy',
-        title: 'Title'
+        title: 'Title',
+        accessKey: '1'
       },
       '|',
       {
         name: 'Code',
         action: Easymde.toggleCodeBlock,
         className: 'material-icons mi-code no-ajaxy',
-        title: 'Code'
+        title: 'Code',
+        accessKey: '2'
       },
       {
         name: 'Quote',
         action: Easymde.toggleBlockquote,
         className: 'material-icons mi-quote no-ajaxy',
-        title: 'Quote'
+        title: 'Quote',
+        accessKey: '3'
       },
       {
         name: 'Generic List',
         action: Easymde.toggleUnorderedList,
         className: 'material-icons mi-list no-ajaxy',
-        title: 'Generic List'
+        title: 'Generic List',
+        accessKey: '4'
       },
       {
         name: 'Numbered List',
         action: Easymde.toggleOrderedList,
         className: 'material-icons mi-numlist no-ajaxy',
-        title: 'Numbered List'
+        title: 'Numbered List',
+        accessKey: '5'
       },
       '|',
       {
         name: 'Create Link',
         action: Easymde.drawLink,
         className: 'material-icons mi-link no-ajaxy',
-        title: 'Create Link'
+        title: 'Create Link',
+        accessKey: 'k'
       },
       '|',
       {
         name: 'Toggle Preview',
         action: Easymde.togglePreview,
         className: 'material-icons mi-preview no-disable no-mobile no-ajaxy',
-        title: 'Toggle Preview'
+        title: 'Toggle Preview',
+        accessKey: 'p'
       }
     ]
   }
 
-  render () {
+  render() {
     setTimeout(() => {
       this.easymde.codemirror.refresh()
     }, 250)
     return (
       <Fragment>
-        <textarea ref={i => (this.element = i)} value={this.state.value} onChange={e => this.onTextareaChanged(e)} />
+        <textarea
+          ref={i => (this.element = i)}
+          value={this.state.value}
+          onChange={e => this.onTextareaChanged(e)}
+          aria-label="Markdown editor"
+          aria-describedby="editorInstructions"
+        />
+        <div id="editorInstructions" className="sr-only">
+          Use the toolbar buttons or keyboard shortcuts (e.g., Ctrl + B for bold) to format text.
+        </div>
         {this.props.showStatusBar && <div className='editor-statusbar uk-float-left uk-width-1-1' />}
       </Fragment>
     )

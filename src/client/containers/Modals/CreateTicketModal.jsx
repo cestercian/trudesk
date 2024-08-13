@@ -117,7 +117,7 @@ class CreateTicketModal extends React.Component {
     if (this.issueText.length < minIssueLength) {
       $errorBorderWrap.css({ border: '1px solid #E74C3C' })
       const mdeError = $(
-        `<div class="mde-error uk-float-left uk-text-left">Please enter a valid issue. Issue must contain at least ${minIssueLength} characters</div>`
+        `<div class="mde-error uk-float-left uk-text-left" aria-live="assertive">Please enter a valid issue. Issue must contain at least ${minIssueLength} characters</div>`
       )
       $mdeError = $issueTextbox.siblings('.editor-statusbar').find('.mde-error')
       if ($mdeError.length < 1) $issueTextbox.siblings('.editor-statusbar').prepend(mdeError)
@@ -180,37 +180,47 @@ class CreateTicketModal extends React.Component {
       return { text: tag.get('name'), value: tag.get('_id') }
     })
     return (
-      <BaseModal {...this.props} options={{ bgclose: false }}>
-        <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
+      <BaseModal {...this.props} options={{ bgclose: false }} role="dialog" aria-labelledby="createTicketModalTitle" aria-modal="true">
+        <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)} noValidate>
           <div className='uk-margin-medium-bottom'>
-            <label>Subject</label>
+            <label htmlFor="subject">Subject</label>
             <input
               type='text'
               name={'subject'}
+              id={'subject'}
               className={'md-input'}
               data-validation='length'
               data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
               data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
                 .get('ticketSettings')
                 .get('minSubject')} characters.`}
+              aria-required="true"
+              aria-describedby="subjectDesc"
             />
+            <span id="subjectDesc" className="sr-only">Subject field description: Please enter a subject with at least {viewdata.get('ticketSettings').get('minSubject')} characters.</span>
           </div>
           <div className='uk-margin-medium-bottom'>
             <Grid>
               {allowAgentUserTickets && (
                 <GridItem width={'1-3'}>
-                  <label className={'uk-form-label'}>Owner</label>
+                  <label htmlFor="ownerSelect" className={'uk-form-label'}>Owner</label>
                   <SingleSelect
                     showTextbox={true}
                     items={mappedAccounts}
                     defaultValue={this.props.shared.sessionUser._id}
                     width={'100%'}
                     ref={i => (this.ownerSelect = i)}
+                    id="ownerSelect"
+                    aria-required="true"
+                    aria-label="Owner"
+                    onSelectChange={e => {
+                      this.onOwnerSelectChange(e)
+                    }}
                   />
                 </GridItem>
               )}
               <GridItem width={allowAgentUserTickets ? '2-3' : '1-1'}>
-                <label className={'uk-form-label'}>Group</label>
+                <label htmlFor="groupSelect" className={'uk-form-label'}>Group</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedGroups}
@@ -218,6 +228,10 @@ class CreateTicketModal extends React.Component {
                   onSelectChange={e => this.onGroupSelectChange(e)}
                   width={'100%'}
                   ref={i => (this.groupSelect = i)}
+                  id="groupSelect"
+                  aria-required="true"
+                  aria-label="Group"
+                  aria-live="assertive"
                 />
               </GridItem>
             </Grid>
@@ -225,7 +239,7 @@ class CreateTicketModal extends React.Component {
           <div className='uk-margin-medium-bottom'>
             <Grid>
               <GridItem width={'1-3'}>
-                <label className={'uk-form-label'}>Type</label>
+                <label htmlFor="typeSelect" className={'uk-form-label'}>Type</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedTicketTypes}
@@ -235,63 +249,74 @@ class CreateTicketModal extends React.Component {
                     this.onTicketTypeSelectChange(e)
                   }}
                   ref={i => (this.typeSelect = i)}
+                  id="typeSelect"
+                  aria-required="true"
+                  aria-label="Type"
+                  aria-live="assertive"
                 />
               </GridItem>
               <GridItem width={'2-3'}>
-                <label className={'uk-form-label'}>Tags</label>
+                <label htmlFor="tagSelect" className={'uk-form-label'}>Tags</label>
                 <SingleSelect
                   showTextbox={false}
                   items={mappedTicketTags}
                   width={'100%'}
                   multiple={true}
                   ref={i => (this.tagSelect = i)}
+                  id="tagSelect"
+                  aria-label="Tags"
                 />
               </GridItem>
             </Grid>
           </div>
           <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Priority</label>
-            <div
-              ref={i => (this.priorityLoader = i)}
-              style={{ height: '32px', width: '32px', position: 'relative' }}
-              className={'hide'}
-            >
-              <SpinLoader
-                style={{ background: 'transparent' }}
-                spinnerStyle={{ width: '24px', height: '24px' }}
-                active={true}
-              />
-            </div>
-            <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'}>
-              {this.priorities.map(priority => {
-                return (
-                  <div key={priority._id} className={'uk-float-left'}>
-                    <span className={'icheck-inline'}>
-                      <input
-                        id={'p___' + priority._id}
-                        name={'priority'}
-                        type='radio'
-                        className={'with-gap'}
-                        value={priority._id}
-                        onChange={e => {
-                          this.onPriorityRadioChange(e)
-                        }}
-                        checked={this.selectedPriority === priority._id}
-                        data-md-icheck
-                      />
-                      <label htmlFor={'p___' + priority._id} className={'mb-10 inline-label'}>
-                        <span className='uk-badge' style={{ backgroundColor: priority.htmlColor }}>
-                          {priority.name}
-                        </span>
-                      </label>
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+            <fieldset>
+              <legend className={'uk-form-label'}>Priority</legend>
+              <div
+                ref={i => (this.priorityLoader = i)}
+                style={{ height: '32px', width: '32px', position: 'relative' }}
+                className={'hide'}
+                aria-hidden="true"
+              >
+                <SpinLoader
+                  style={{ background: 'transparent' }}
+                  spinnerStyle={{ width: '24px', height: '24px' }}
+                  active={true}
+                />
+              </div>
+              <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'} aria-live="polite">
+                {this.priorities.map(priority => {
+                  return (
+                    <div key={priority._id} className={'uk-float-left'}>
+                      <span className={'icheck-inline'}>
+                        <input
+                          id={'p___' + priority._id}
+                          name={'priority'}
+                          type='radio'
+                          className={'with-gap'}
+                          value={priority._id}
+                          onChange={e => {
+                            this.onPriorityRadioChange(e)
+                          }}
+                          checked={this.selectedPriority === priority._id}
+                          data-md-icheck
+                          aria-label={`Priority ${priority.name}`}
+                          tabIndex={0}
+                        />
+                        <label htmlFor={'p___' + priority._id} className={'mb-10 inline-label'}>
+                          <span className='uk-badge' style={{ backgroundColor: priority.htmlColor }}>
+                            {priority.name}
+                          </span>
+                        </label>
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </fieldset>
           </div>
           <div className='uk-margin-medium-bottom'>
-            <span>Description</span>
+            <label htmlFor="issueMde" className={'uk-form-label'}>Description</label>
             <div className='error-border-wrap uk-clearfix'>
               <EasyMDE
                 ref={i => (this.issueMde = i)}
@@ -299,12 +324,12 @@ class CreateTicketModal extends React.Component {
                 allowImageUpload={true}
                 inlineImageUploadUrl={'/tickets/uploadmdeimage'}
                 inlineImageUploadHeaders={{ ticketid: 'uploads' }}
+                aria-required="true"
+                id="issueMde"
               />
             </div>
-            <span style={{ marginTop: '6px', display: 'inline-block', fontSize: '11px' }} className={'uk-text-muted'}>
-              Please try to be as specific as possible. Please include any details you think may be relevant, such as
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
-              troubleshooting steps you've taken.
+            <span style={{ marginTop: '6px', display: 'inline-block', fontSize: '11px' }} className={'uk-text-muted'} id="issueDesc">
+              Please try to be as specific as possible. Include any relevant details, such as troubleshooting steps you've taken.
             </span>
           </div>
           <div className='uk-modal-footer uk-text-right'>
