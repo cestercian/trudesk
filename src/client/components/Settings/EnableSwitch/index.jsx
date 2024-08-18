@@ -27,10 +27,22 @@ class EnableSwitch extends React.Component {
     }
   }
 
+  onKeyDown = (e) => {
+    if (e.key === ' ' && !this.props.disabled) {
+      e.preventDefault()
+      this.props.onChange({ target: { checked: !this.props.checked } })
+      const liveRegion = document.getElementById('switch-announcement')
+      if (liveRegion) {
+        liveRegion.textContent = `Switch ${this.props.label} is now ${!this.props.checked ? 'on' : 'off'}`
+      }
+      document.getElementById(this.props.stateName).checked = !this.props.checked
+    }
+  }
+
   render () {
     const combinedStyle = merge({ margin: '17px 0 0 0' }, this.props.style)
     return (
-      <div className='md-switch-wrapper md-switch md-green uk-float-right uk-clearfix' style={combinedStyle}>
+      <div className='md-switch-wrapper md-switch md-green uk-float-right uk-clearfix' style={combinedStyle} role='switch' aria-checked={this.props.checked} tabIndex={0} onKeyDown={this.onKeyDown} aria-disabled={this.props.disabled}>
         <label ref={this.labelRef} htmlFor={this.props.stateName} style={this.props.labelStyle || {}}>
           {this.props.label}
           {this.props.sublabel}
@@ -38,6 +50,7 @@ class EnableSwitch extends React.Component {
 
         <input
           type='checkbox'
+          tabIndex={-1}
           id={this.props.stateName}
           name={this.props.stateName}
           onChange={this.props.onChange}
@@ -45,6 +58,7 @@ class EnableSwitch extends React.Component {
           disabled={this.props.disabled}
         />
         <span className={clsx('lever', this.props.leverClass)} onClick={e => this.onLevelClick(e)} />
+        <div id="switch-announcement" aria-live="assertive" style={{ position: 'absolute', left: '-9999px' }}></div>
       </div>
     )
   }
