@@ -126,10 +126,10 @@ const BaseRouter = ({ user, setSession }) => {
       <Route path={'teams'} element={<TeamsContainer key={location.key} sessionUser={user} />} exact />
 
       {/* Departments */}
-      <Route path={'departments'} element={<DepartmentsContainer key={location.key} sessionUser={user} />} exact />
+      {/* <Route path={'departments'} element={<DepartmentsContainer key={location.key} sessionUser={user} />} exact /> */}
 
       {/* Notices */}
-      <Route path={'notices'} element={<NoticesContainer key={location.key} sessionUser={user} />} exact />
+      {/* <Route path={'notices'} element={<NoticesContainer key={location.key} sessionUser={user} />} exact /> */}
 
       {/* Settings */}
       <Route path={'settings'} element={<SettingsLazy />} />
@@ -172,8 +172,8 @@ const BaseRouter = ({ user, setSession }) => {
   <Route path={'tickets/:uid'} element={<SingleTicket sessionUser={user} />} exact />
 
   {/* Conversations (Accessible by all users) */}
-  <Route path={'messages'} element={<MessagesContainer key={0} sessionUser={user} />} exact />
-  <Route path={'messages/:convo'} element={<MessagesWithParams key={location.key} sessionUser={user} />} exact />
+  {/* <Route path={'messages'} element={<MessagesContainer key={0} sessionUser={user} />} exact />
+  <Route path={'messages/:convo'} element={<MessagesWithParams key={location.key} sessionUser={user} />} exact /> */}
 
   {/* Other Routes */}
   <Route path={'about'} element={<AboutContainer />} />

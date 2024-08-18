@@ -146,7 +146,7 @@ class TopbarContainer extends React.Component {
 
   render () {
     const { loadingViewData, viewdata, sessionUser } = this.props
-    if (loadingViewData || !sessionUser) return <div className='top-nav' />
+    if (loadingViewData || !sessionUser) return <div className='top-nav' aria-hidden='true'/>
     return (
       <div>
         <Helmet>
@@ -158,7 +158,7 @@ class TopbarContainer extends React.Component {
             <div className='top-bar' data-topbar>
               <div className='title-area uk-float-left'>
                 <div className='logo'>
-                  <img src={viewdata.get('logoImage')} alt='Logo' className={'site-logo'} />
+                  <img src={viewdata.get('logoImage')} alt='Zendalona Logo' className={'site-logo'} />
                 </div>
               </div>
               <section className='top-bar-section uk-clearfix'>
@@ -171,18 +171,19 @@ class TopbarContainer extends React.Component {
                           title={'Create Ticket'}
                           className={'anchor'}
                           onClick={() => this.props.showModal('CREATE_TICKET')}
+                          aria-label='Create Ticket'
                         >
-                          <i className='material-icons'>&#xE145;</i>
+                          <i className='material-icons' aria-hidden='true'>&#xE145;</i>
                         </button>
                       </li>
                     )}
                     {sessionUser && helpers.canUser('tickets:create') && (
-                      <li className='top-bar-icon nopadding nohover'>
+                      <li className='top-bar-icon nopadding nohover' aria-hidden='true'>
                         <i className='material-icons separator'>remove</i>
                       </li>
                     )}
                     {/* End Create Ticket Perm */}
-                    <li className='top-bar-icon'>
+                    {/* <li className='top-bar-icon'>
                       <PDropdownTrigger target={this.conversationsDropdownPartial}>
                         <a
                           title={'Conversations'}
@@ -192,8 +193,8 @@ class TopbarContainer extends React.Component {
                           <i className='material-icons'>question_answer</i>
                         </a>
                       </PDropdownTrigger>
-                    </li>
-                    <li className='top-bar-icon'>
+                    </li> */}
+                    {/* <li className='top-bar-icon'>
                       <PDropdownTrigger target={this.notificationsDropdownPartial}>
                         <a title={'Notifications'} className={'no-ajaxy uk-vertical-align'}>
                           <i className='material-icons'>notifications</i>
@@ -204,7 +205,7 @@ class TopbarContainer extends React.Component {
                           </span>
                         </a>
                       </PDropdownTrigger>
-                    </li>
+                    </li> */}
                     {/*<li className='top-bar-icon'>*/}
                     {/*  <OffCanvasTrigger target={'online-user-list'}>*/}
                     {/*    <a title={'Online Users'} className='no-ajaxy'>*/}
@@ -220,9 +221,9 @@ class TopbarContainer extends React.Component {
                     {/*    </a>*/}
                     {/*  </OffCanvasTrigger>*/}
                     {/*</li>*/}
-                    <li className='top-bar-icon nopadding nohover'>
+                    {/* <li className='top-bar-icon nopadding nohover'>
                       <i className='material-icons separator'>remove</i>
-                    </li>
+                    </li> */}
 
                     <li className='profile-area profile-name'>
                       <span style={{ fontSize: 16 }}>{sessionUser.fullname}</span>

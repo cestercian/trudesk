@@ -37,11 +37,11 @@ export const menu = [
       }
     ]
   },
-  {
-    label: 'Conversations',
-    icon: 'chat',
-    url: '/messages'
-  },
+  // {
+  //   label: 'Conversations',
+  //   icon: 'chat',
+  //   url: '/messages'
+  // },
   // {
   //   label: 'Knowledge Base',
   //   icon: 'book',
@@ -91,18 +91,18 @@ export const menu = [
     url: '/teams',
     perm: 'admin:*'
   },
-  {
-    label: 'Departments',
-    icon: 'domain',
-    url: '/departments',
-    perm: 'admin:*'
-  },
-  {
-    label: 'Notices',
-    icon: 'campaign',
-    url: '/notices',
-    perm: 'notices:create'
-  },
+  // {
+  //   label: 'Departments',
+  //   icon: 'domain',
+  //   url: '/departments',
+  //   perm: 'admin:*'
+  // },
+  // {
+  //   label: 'Notices',
+  //   icon: 'campaign',
+  //   url: '/notices',
+  //   perm: 'notices:create'
+  // },
   // {
   //   label: 'Reports',
   //   icon: 'assessment',
@@ -187,12 +187,12 @@ export const menu = [
       }
     ]
   },
-  {
-    label: 'SettingsNew',
-    icon: 'settings',
-    url: '/v2settings',
-    perm: 'admin:*'
-  },
+  // {
+  //   label: 'SettingsNew',
+  //   icon: 'settings',
+  //   url: '/v2settings',
+  //   perm: 'admin:*'
+  // },
   // {
   //   label: 'Update',
   //   icon: 'update',
