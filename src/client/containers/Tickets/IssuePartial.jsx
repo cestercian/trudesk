@@ -25,14 +25,14 @@ import helpers from 'lib/helpers'
 import axios from 'axios'
 import Log from '../../logger'
 
-const setupImages = parent => {
+const setupImages = (parent) => {
   const imagesEl = parent.issueBody.querySelectorAll('img:not(.hasLinked)')
-  imagesEl.forEach(i => helpers.setupImageLink(i))
+  imagesEl.forEach((i) => helpers.setupImageLink(i))
 }
 
-const setupLinks = parent => {
+const setupLinks = (parent) => {
   const linksEl = parent.issueBody.querySelectorAll('a')
-  linksEl.forEach(i => helpers.setupLinkWarning(i))
+  linksEl.forEach((i) => helpers.setupLinkWarning(i))
 }
 
 @observer
@@ -44,7 +44,7 @@ class IssuePartial extends React.Component {
   @observable issue = ''
   @observable attachments = []
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
 
@@ -58,14 +58,14 @@ class IssuePartial extends React.Component {
     this.onUpdateTicketAttachments = this.onUpdateTicketAttachments.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     setupImages(this)
     setupLinks(this)
 
     this.props.socket.on(TICKETS_UI_ATTACHMENTS_UPDATE, this.onUpdateTicketAttachments)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.ticketId !== this.props.ticketId) this.ticketId = this.props.ticketId
     if (prevProps.status !== this.props.status) this.status = this.props.status
     if (prevProps.owner !== this.props.owner) this.owner = this.props.owner
@@ -74,17 +74,17 @@ class IssuePartial extends React.Component {
     if (prevProps.attachments !== this.props.attachments) this.attachments = this.props.attachments
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.props.socket.off(TICKETS_UI_ATTACHMENTS_UPDATE, this.onUpdateTicketAttachments)
   }
 
-  onUpdateTicketAttachments (data) {
+  onUpdateTicketAttachments(data) {
     if (this.ticketId === data.ticket._id) {
       this.attachments = data.ticket.attachments
     }
   }
 
-  onAttachmentInputChange (e) {
+  onAttachmentInputChange(e) {
     const formData = new FormData()
     const attachmentFile = e.target.files[0]
     formData.append('ticketId', this.ticketId)
@@ -94,41 +94,41 @@ class IssuePartial extends React.Component {
       .post(`/tickets/uploadattachment`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'CSRF-TOKEN': token
-        }
+          'CSRF-TOKEN': token,
+        },
       })
       .then(() => {
         this.props.socket.emit(TICKETS_UI_ATTACHMENTS_UPDATE, { _id: this.ticketId })
         helpers.UI.showSnackbar('Attachment Successfully Uploaded')
       })
-      .catch(error => {
+      .catch((error) => {
         Log.error(error)
         if (error.response) Log.error(error.response)
         helpers.UI.showSnackbar(error, true)
       })
   }
 
-  removeAttachment (e, attachmentId) {
+  removeAttachment(e, attachmentId) {
     axios
       .delete(`/api/v1/tickets/${this.ticketId}/attachments/remove/${attachmentId}`)
       .then(() => {
         this.props.socket.emit(TICKETS_UI_ATTACHMENTS_UPDATE, { _id: this.ticketId })
         helpers.UI.showSnackbar('Attachment Removed')
       })
-      .catch(error => {
+      .catch((error) => {
         Log.error(error)
         if (error.response) Log.error(error.response)
         helpers.UI.showSnackbar(error, true)
       })
   }
 
-  render () {
+  render() {
     return (
-      <div className='initial-issue uk-clearfix'>
+      <div className="initial-issue uk-clearfix">
         <Avatar image={this.owner.image} userId={this.owner._id} />
         {/* Issue */}
-        <div className='issue-text'>
-          <h3 className='subject-text'>{this.subject}</h3>
+        <div className="issue-text">
+          <h3 className="subject-text">{this.subject}</h3>
           <a href={`mailto:${this.owner.email}`}>
             {this.owner.fullname} &lt;{this.owner.email}&gt;
           </a>
@@ -138,26 +138,26 @@ class IssuePartial extends React.Component {
           </time>
           <br />
           {/* Attachments */}
-          <ul className='attachments'>
+          <ul className="attachments">
             {this.attachments &&
-              this.attachments.map(attachment => (
+              this.attachments.map((attachment) => (
                 <li key={attachment._id}>
-                  <a href={attachment.path} className='no-ajaxy' rel='noopener noreferrer' target='_blank'>
+                  <a href={attachment.path} className="no-ajaxy" rel="noopener noreferrer" target="_blank">
                     {attachment.name}
                   </a>
                   {this.status.get('isResolved') === false && (
                     <a
-                      role='button'
+                      role="button"
                       className={'remove-attachment'}
-                      onClick={e => this.removeAttachment(e, attachment._id)}
+                      onClick={(e) => this.removeAttachment(e, attachment._id)}
                     >
-                      <i className='fa fa-remove' />
+                      <i className="fa fa-remove" />
                     </a>
                   )}
                 </li>
               ))}
           </ul>
-          <div className='issue-body' ref={r => (this.issueBody = r)}>
+          <div className="issue-body" ref={(r) => (this.issueBody = r)}>
             {ReactHtmlParser(this.issue)}
           </div>
         </div>
@@ -167,32 +167,65 @@ class IssuePartial extends React.Component {
             <Fragment>
               <div
                 className={'edit-issue'}
+                role="button"
+                tabIndex={0}
+                aria-label="Edit Issue"
                 onClick={() => {
                   if (this.props.editorWindow)
                     this.props.editorWindow.openEditorWindow({
                       subject: this.subject,
                       text: this.issue,
-                      onPrimaryClick: data => {
+                      onPrimaryClick: (data) => {
                         this.props.socket.emit(TICKETS_ISSUE_SET, {
                           _id: this.ticketId,
                           value: data.text,
-                          subject: data.subjectText
+                          subject: data.subjectText,
                         })
-                      }
+                      },
                     })
                 }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    if (this.props.editorWindow)
+                      this.props.editorWindow.openEditorWindow({
+                        subject: this.subject,
+                        text: this.issue,
+                        onPrimaryClick: (data) => {
+                          this.props.socket.emit(TICKETS_ISSUE_SET, {
+                            _id: this.ticketId,
+                            value: data.text,
+                            subject: data.subjectText,
+                          })
+                        },
+                      })
+                  }
+                }}
               >
-                <i className='material-icons'>&#xE254;</i>
+                <i className="material-icons">&#xE254;</i>
               </div>
-              <form className='form nomargin' encType='multipart/form-data'>
-                <div className='add-attachment' onClick={e => this.attachmentInput.click()}>
-                  <i className='material-icons'>&#xE226;</i>
+              <form className="form nomargin" encType="multipart/form-data">
+                <div
+                  className="add-attachment"
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Add Attachment"
+                  onClick={(e) => this.attachmentInput.click()}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      this.handleAddAttachment(e)
+                    }
+                  }}
+
+                >
+                  <i className="material-icons">&#xE226;</i>
                 </div>
                 <input
-                  ref={r => (this.attachmentInput = r)}
-                  className='hide'
-                  type='file'
-                  onChange={e => this.onAttachmentInputChange(e)}
+                  ref={(r) => (this.attachmentInput = r)}
+                  className="hide"
+                  type="file"
+                  onChange={(e) => this.onAttachmentInputChange(e)}
                 />
               </form>
             </Fragment>
@@ -212,7 +245,7 @@ IssuePartial.propTypes = {
   dateFormat: PropTypes.string.isRequired,
   attachments: PropTypes.array,
   editorWindow: PropTypes.object,
-  socket: PropTypes.object.isRequired
+  socket: PropTypes.object.isRequired,
 }
 
 export default IssuePartial

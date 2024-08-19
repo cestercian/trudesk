@@ -596,6 +596,7 @@ class SingleTicketContainer extends React.Component {
                   <div className='page-top-comments uk-float-right'>
                     <a
                       role='button'
+                      href='#'
                       className='btn no-ajaxy'
                       onClick={e => {
                         e.preventDefault()
