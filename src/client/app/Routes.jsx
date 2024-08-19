@@ -120,10 +120,10 @@ const BaseRouter = ({ user, setSession }) => {
       <Route path={'accounts/:view'} element={<AccountsWithParams key={location.key} sessionUser={user} />} exact />
 
       {/* Groups */}
-      <Route path={'groups'} element={<GroupsContainer key={0} sessionUser={user} />} exact />
+      {/* <Route path={'groups'} element={<GroupsContainer key={0} sessionUser={user} />} exact /> */}
 
       {/* Teams */}
-      <Route path={'teams'} element={<TeamsContainer key={location.key} sessionUser={user} />} exact />
+      {/* <Route path={'teams'} element={<TeamsContainer key={location.key} sessionUser={user} />} exact /> */}
 
       {/* Departments */}
       {/* <Route path={'departments'} element={<DepartmentsContainer key={location.key} sessionUser={user} />} exact /> */}

@@ -79,18 +79,18 @@ export const menu = [
       }
     ]
   },
-  {
-    label: 'Groups',
-    icon: 'groups',
-    url: '/groups',
-    perm: 'groups:view'
-  },
-  {
-    label: 'Teams',
-    icon: 'wc',
-    url: '/teams',
-    perm: 'admin:*'
-  },
+  // {
+  //   label: 'Groups',
+  //   icon: 'groups',
+  //   url: '/groups',
+  //   perm: 'groups:view'
+  // },
+  // {
+  //   label: 'Teams',
+  //   icon: 'wc',
+  //   url: '/teams',
+  //   perm: 'admin:*'
+  // },
   // {
   //   label: 'Departments',
   //   icon: 'domain',
