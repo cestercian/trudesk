@@ -273,6 +273,7 @@ class TicketsContainer extends React.Component {
                 />
                 <PageTitleButton
                   fontAwesomeIcon={'fa-refresh'}
+                  ariaLabel={'Refresh Tickets'}
                   onButtonClick={(e) => {
                     e.preventDefault()
                     this.props
@@ -282,35 +283,36 @@ class TicketsContainer extends React.Component {
                 />
                 <PageTitleButton
                   fontAwesomeIcon={'fa-filter'}
+                  ariaLabel={'Filter Tickets'}
                   onButtonClick={(e) => {
                     e.preventDefault()
                     this.props.showModal('FILTER_TICKET')
-                  }}
-                />
-                <DropdownTrigger pos={'bottom-right'} offset={5} extraClass={'uk-float-left'}>
-                  <PageTitleButton fontAwesomeIcon={'fa-tasks'} />
-                  <Dropdown small={true} width={120}>
+                    }}
+                  />
+                  <DropdownTrigger pos={'bottom-right'} offset={5} extraClass={'uk-float-left'}>
+                    <PageTitleButton fontAwesomeIcon={'fa-tasks'} />
+                    <Dropdown small={true} width={120}>
                     <DropdownItem text={'Create'} onClick={() => this.props.showModal('CREATE_TICKET')} />
                     <DropdownSeparator />
                     {this.props.ticketStatuses.map((s) => (
                       <DropdownItem
-                        key={s.get('_id')}
-                        text={'Set ' + s.get('name')}
-                        onClick={() => this.onSetStatus(s)}
+                      key={s.get('_id')}
+                      text={'Set ' + s.get('name')}
+                      onClick={() => this.onSetStatus(s)}
                       />
                     ))}
                     {helpers.canUser('tickets:delete', true) && <DropdownSeparator />}
                     {helpers.canUser('tickets:delete', true) && (
                       <DropdownItem text={'Delete'} extraClass={'text-danger'} onClick={() => this.onDeleteClicked()} />
                     )}
-                  </Dropdown>
-                </DropdownTrigger>
-                <div className={'uk-float-right'}>
-                  <div
+                    </Dropdown>
+                  </DropdownTrigger>
+                  <div className={'uk-float-right'}>
+                    <div
                     id={'ticket-search-box'}
                     className="search-box uk-float-left nb"
                     style={{ marginTop: 8, paddingLeft: 0 }}
-                  >
+                    >
                     <input
                       type="text"
                       id="tickets_Search"
@@ -319,16 +321,17 @@ class TicketsContainer extends React.Component {
                       value={this.searchTerm}
                       onChange={(e) => this.onSearchTermChanged(e)}
                       onFocus={(e) => this._onSearchFocus(e)}
+                      aria-label={'Search tickets'}
                     />
+                    </div>
                   </div>
+                  </div>
+                  <SearchResults target={'#ticket-search-box'} ref={(r) => (this.searchContainer = r)} />
                 </div>
-              </div>
-              <SearchResults target={'#ticket-search-box'} ref={(r) => (this.searchContainer = r)} />
-            </div>
-          }
-        />
-        <PageContent padding={0} paddingBottom={0} extraClass={'uk-position-relative'}>
-          {/*<SpinLoader active={this.props.loading} />*/}
+                }
+              />
+              <PageContent padding={0} paddingBottom={0} extraClass={'uk-position-relative'}>
+                {/*<SpinLoader active={this.props.loading} />*/}
           <Table
             tableRef={(ref) => (this.ticketsTable = ref)}
             style={{ margin: 0 }}

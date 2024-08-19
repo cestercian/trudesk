@@ -45,11 +45,11 @@ class CommentNotePartial extends React.Component {
     const { ticketSubject, comment, isNote, dateFormat, onEditClick, onRemoveClick } = this.props
     const dateFormatted = helpers.formatDate(comment.date, dateFormat)
     return (
-      <div className='ticket-comment'>
+      <div className='ticket-comment' role="article" aria-labelledby={`comment-${comment._id}-header`}>
         <Avatar image={comment.owner.image} userId={comment.owner._id} />
         <div className='issue-text'>
-          <h3>Re: {ticketSubject}</h3>
-          <a className='comment-email-link' href={`mailto:${comment.owner.email}`}>
+          <h3 id={`comment-${comment._id}-header`}>Re: {ticketSubject}</h3>
+          <a className='comment-email-link' href={`mailto:${comment.owner.email}`} aria-label={`Email ${comment.owner.fullname}`}>
             {comment.owner.fullname} &lt;{comment.owner.email}&gt;
           </a>
           <br />
@@ -58,25 +58,17 @@ class CommentNotePartial extends React.Component {
           </time>
 
           <br />
-          {isNote && <span className='uk-badge uk-badge-small nomargin-left-right text-white'>NOTE</span>}
+          {isNote && <span className='uk-badge uk-badge-small nomargin-left-right text-white' role="status">NOTE</span>}
 
-          <div className='comment-body' style={{ marginTop: 10 }} ref={r => (this.body = r)}>
+          <div className='comment-body' style={{ marginTop: 10 }} ref={r => (this.body = r)} role="region" aria-labelledby={`comment-${comment._id}-header`}>
             {isNote && <Fragment>{ReactHtmlParser(comment.note)}</Fragment>}
             {!isNote && <Fragment>{ReactHtmlParser(comment.comment)}</Fragment>}
           </div>
         </div>
         {this.props.ticketStatus.get('isResolved') === false && (
           <div className='comment-actions'>
-            {helpers.hasPermOverRole(comment.owner.role, null, 'comments:delete', true) && (
-              <div className='remove-comment' onClick={onRemoveClick}>
-                <i className='material-icons'>&#xE5CD;</i>
-              </div>
-            )}
-            {helpers.hasPermOverRole(comment.owner.role, null, 'comments:update', true) && (
-              <div className='edit-comment' onClick={onEditClick}>
-                <i className='material-icons'>&#xE254;</i>
-              </div>
-            )}
+            <button onClick={onEditClick} tabIndex={0} aria-label="Edit comment">Edit</button>
+            <button onClick={onRemoveClick} tabIndex={0} aria-label="Remove comment">Remove</button>
           </div>
         )}
       </div>
