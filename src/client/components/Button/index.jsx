@@ -45,8 +45,8 @@ class Button extends React.Component {
       styleOverride,
       hasDropdown,
       ariaLabel = text,
-      role = 'button',
-      tabIndex = 0
+      // role = 'button',
+      // tabIndex = 0
     } = this.props
     const classBuild =
       (small ? ' md-btn-small ' : '') +
@@ -72,8 +72,8 @@ class Button extends React.Component {
         style={renderStyleOverride}
         ref={r => (this.button = r)}
         aria-label={ariaLabel}
-        role={role}
-        tabIndex={tabIndex}
+        role={"button"}
+        tabIndex={0}
       >
         {icon && (
           <i className={'material-icons'} style={{ fontSize: '18px', margin: '5px 0' }}>
@@ -105,7 +105,7 @@ Button.propTypes = {
   extraClass: PropTypes.string,
   onClick: PropTypes.func,
   ariaLabel: PropTypes.string,
-  tabIndex: PropTypes.number,
+  // tabIndex: PropTypes.number,
   role: PropTypes.string,
 }
 

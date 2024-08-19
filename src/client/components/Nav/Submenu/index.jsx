@@ -45,19 +45,18 @@ class Submenu extends Component {
   shouldComponentUpdate (nextProps) {
     return this.props.children !== nextProps.children
   }
-
   buildFloatingMenu (navId, title) {
     const self = this
     if (this.props.children) {
       const $sideBarToRight = $('.sidebar-to-right')
       $sideBarToRight.find('#side-nav-sub-' + navId).remove()
-      const ul = $('<ul id="side-nav-sub-' + this.props.id + '" class="side-nav-sub side-nav-floating"></ul>')
+      const ul = $('<ul id="side-nav-sub-' + this.props.id + '" class="side-nav-sub side-nav-floating" role="navigation" aria-label="Floating Menu"></ul>')
       let li = null
       if (!IsArray(this.props.children)) {
         const child = this.props.children
         if (child.type && child.type.name === 'NavSeparator') return
 
-        li = $(`<li class="${child.props.active && 'active'}"></li>`)
+        li = $(`<li class="${child.props.active && 'active'}" role="menuitem" ${child.props.active ? 'aria-current="page"' : ''}></li>`)
         const anchor = $('<a href="#"></a>')
         anchor.click(function (e) {
           e.preventDefault()
@@ -68,7 +67,7 @@ class Submenu extends Component {
         ul.append(li)
       } else {
         if (title) {
-          li = $(`<li class='uk-nav-header'>${title}</li>`)
+          li = $(`<li class='uk-nav-header' role="presentation">${title}</li>`)
           ul.append(li)
           ul.append('<hr />')
         }
@@ -77,12 +76,11 @@ class Submenu extends Component {
           const child = this.props.children[i]
           if (child.type.name === 'NavSeparator') ul.append('<hr />')
           else {
-            if (child.props.hasSeparator) ul.append('<hr />')
-            li = $(`<li class="${child.props.active && 'active'}"></li>`)
-            const anchor = $(`<a href="#"></a>`)
+            li = $(`<li class="${child.props.active && 'active'}" role="menuitem" ${child.props.active ? 'aria-current="page"' : ''}></li>`)
+            const anchor = $('<a href="#"></a>')
             anchor.click(function (e) {
               e.preventDefault()
-              self.props.navigate(`${child.props.href}`)
+              self.props.navigate(child.props.href)
             })
             anchor.append(`<span>${child.props.text}</span>`)
             li.append(anchor)
@@ -90,10 +88,7 @@ class Submenu extends Component {
           }
         }
       }
-
       $sideBarToRight.append(ul)
-
-      Helpers.UI.setupSidebarTether()
     }
   }
 

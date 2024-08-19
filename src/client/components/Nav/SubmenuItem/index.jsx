@@ -20,10 +20,14 @@ class SubmenuItem extends React.Component {
   render () {
     return (
       <div>
-        {this.props.hasSeperator && <hr />}
-        <li className={this.props.active ? ' active ' : ''}>
-          <Link to={this.props.href}>
-            <i className='material-icons fa-sub-icon'>{this.props.icon}</i>
+        {this.props.hasSeperator && <hr role="separator" />}
+        <li 
+          className={this.props.active ? ' active ' : ''} 
+          role="menuitem" 
+          aria-current={this.props.active ? 'page' : undefined}
+        >
+          <Link to={this.props.href} aria-label={this.props.text}>
+            <i className='material-icons fa-sub-icon' aria-hidden="true">{this.props.icon}</i>
             {this.props.text}
           </Link>
         </li>

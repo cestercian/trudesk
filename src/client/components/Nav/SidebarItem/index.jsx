@@ -32,8 +32,14 @@ class NavButton extends Component {
 
   renderAnchorLink () {
     return (
-      <Link to={this.props.href} className={this.props.class} target={this.props.target || ''}>
-        <i className='material-icons'>{this.props.icon}</i>
+      <Link 
+        to={this.props.href} 
+        className={this.props.class} 
+        target={this.props.target || ''} 
+        aria-label={this.props.text} 
+        role="button"
+      >
+        <i className='material-icons' aria-hidden="true">{this.props.icon}</i>
         {this.props.text}
       </Link>
     )
