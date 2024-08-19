@@ -26,10 +26,20 @@ class Table extends React.Component {
       (stickyHeader ? ' sticky-header fixed-width' : '') +
       (extraClass ? ' ' + extraClass : '')
     return (
-      <table className={tableClass} style={this.props.style} ref={this.props.tableRef}>
+      <table 
+        className={tableClass} 
+        style={this.props.style} 
+        ref={this.props.tableRef} 
+        role="table" 
+        aria-label={this.props.ariaLabel}
+      >
         {headers && (
           <thead>
-            <tr>{headers}</tr>
+            <tr>
+              {headers.map((header, index) => (
+                <th key={index} scope="col">{header}</th>
+              ))}
+            </tr>
           </thead>
         )}
         {useBody && <tbody className={'scrollable full-height c91-fix'}>{children}</tbody>}
@@ -40,14 +50,15 @@ class Table extends React.Component {
 }
 
 Table.propTypes = {
-  headers: PropTypes.arrayOf(PropTypes.element),
-  tableRef: PropTypes.func,
+  headers: PropTypes.arrayOf(PropTypes.node),
   striped: PropTypes.bool,
   stickyHeader: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
-  style: PropTypes.object,
+  children: PropTypes.node,
   extraClass: PropTypes.string,
-  useBody: PropTypes.bool
+  useBody: PropTypes.bool,
+  style: PropTypes.object,
+  tableRef: PropTypes.object,
+  ariaLabel: PropTypes.string
 }
 
 Table.defaultProps = {

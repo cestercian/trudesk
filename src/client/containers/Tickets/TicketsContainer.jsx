@@ -26,7 +26,7 @@ import {
   ticketEvent,
   unloadTickets,
   ticketUpdated,
-  fetchTicketStatus
+  fetchTicketStatus,
 } from 'actions/tickets'
 import { fetchSearchResults } from 'actions/search'
 import { showModal } from 'actions/common'
@@ -58,7 +58,7 @@ class TicketsContainer extends React.Component {
 
   selectedTickets = []
 
-  constructor (props) {
+  constructor(props) {
     super(props)
     makeObservable(this)
 
@@ -67,7 +67,7 @@ class TicketsContainer extends React.Component {
     this.onTicketDeleted = this.onTicketDeleted.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.props.socket.on('$trudesk:client:ticket:created', this.onTicketCreated)
     this.props.socket.on('$trudesk:client:ticket:updated', this.onTicketUpdated)
     this.props.socket.on('$trudesk:client:ticket:deleted', this.onTicketDeleted)
@@ -76,7 +76,7 @@ class TicketsContainer extends React.Component {
     this.props.fetchTicketStatus()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.timeline) {
       this.timeline.pause()
       this.timeline.seek(0)
@@ -90,19 +90,19 @@ class TicketsContainer extends React.Component {
       autoPlay: false,
       easing: 'steps(1)',
       loop: true,
-      backgroundColor: 'blue'
+      backgroundColor: 'blue',
     })
 
     this.timeline.add({
       targets: 'tr.overdue td',
       backgroundColor: '#b71c1c',
-      color: '#ffffff'
+      color: '#ffffff',
     })
 
     this.timeline.play()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     anime.remove('tr.overdue td')
     this.timeline = null
     this.props.unloadTickets()
@@ -111,33 +111,33 @@ class TicketsContainer extends React.Component {
     this.props.socket.off('$trudesk:client:ticket:deleted', this.onTicketDeleted)
   }
 
-  onTicketCreated (ticket) {
+  onTicketCreated(ticket) {
     if (this.props.page === '0') this.props.ticketEvent({ type: 'created', data: ticket })
   }
 
-  onTicketUpdated (data) {
+  onTicketUpdated(data) {
     this.props.ticketUpdated(data)
   }
 
-  onTicketDeleted (id) {
+  onTicketDeleted(id) {
     this.props.ticketEvent({ type: 'deleted', data: id })
   }
 
-  onTicketCheckChanged (e, id) {
+  onTicketCheckChanged(e, id) {
     if (e.target.checked) this.selectedTickets.push(id)
     else this.selectedTickets = without(this.selectedTickets, id)
 
     this.selectedTickets = uniq(this.selectedTickets)
   }
 
-  onSetStatus (status) {
-    const batch = this.selectedTickets.map(id => {
+  onSetStatus(status) {
+    const batch = this.selectedTickets.map((id) => {
       return { id, status: status.get('_id') }
     })
 
     axios
       .put(`/api/v2/tickets/batch`, { batch })
-      .then(res => {
+      .then((res) => {
         if (res.data.success) {
           helpers.UI.showSnackbar(`Ticket status set to ${status.get('name')}`)
           this._clearChecked()
@@ -146,21 +146,21 @@ class TicketsContainer extends React.Component {
           Log.error(res.data.error)
         }
       })
-      .catch(error => {
+      .catch((error) => {
         Log.error(error)
         helpers.UI.showSnackbar('An Error occurred. Please check console.', true)
       })
   }
 
-  onDeleteClicked () {
-    each(this.selectedTickets, id => {
+  onDeleteClicked() {
+    each(this.selectedTickets, (id) => {
       this.props.deleteTicket({ id })
     })
 
     this._clearChecked()
   }
 
-  onSearchTermChanged (e) {
+  onSearchTermChanged(e) {
     this.searchTerm = e.target.value
     if (this.searchTerm.length > 3) {
       SearchResults.toggleAnimation(true, true)
@@ -170,11 +170,11 @@ class TicketsContainer extends React.Component {
     }
   }
 
-  _onSearchFocus (e) {
+  _onSearchFocus(e) {
     if (this.searchTerm.length > 3) SearchResults.toggleAnimation(true, true)
   }
 
-  onSearchKeypress (e) {
+  onSearchKeypress(e) {
     if (this.searchTerm.length > 3) this.props.fetchSearchResults({ term: this.searchTerm })
 
     // e.persist()
@@ -185,10 +185,10 @@ class TicketsContainer extends React.Component {
     // }
   }
 
-  _selectAll () {
+  _selectAll() {
     this.selectedTickets = []
     const checkboxes = this.ticketsTable.querySelectorAll('td > input[type="checkbox"]')
-    checkboxes.forEach(item => {
+    checkboxes.forEach((item) => {
       this.selectedTickets.push(item.dataset.ticket)
       item.checked = true
     })
@@ -196,22 +196,22 @@ class TicketsContainer extends React.Component {
     this.selectedTickets = uniq(this.selectedTickets)
   }
 
-  _clearChecked () {
+  _clearChecked() {
     this.selectedTickets = []
     const checkboxes = this.ticketsTable.querySelectorAll('td > input[type="checkbox"]')
-    checkboxes.forEach(item => {
+    checkboxes.forEach((item) => {
       item.checked = false
     })
 
     this.selectAllCheckbox.checked = false
   }
 
-  onSelectAll (e) {
+  onSelectAll(e) {
     if (e.target.checked) this._selectAll()
     else this._clearChecked()
   }
 
-  render () {
+  render() {
     const loadingItems = []
     for (let i = 0; i < 51; i++) {
       const cells = []
@@ -229,17 +229,17 @@ class TicketsContainer extends React.Component {
     const selectAllCheckbox = (
       <div style={{ marginLeft: 17 }}>
         <input
-          type='checkbox'
+          type="checkbox"
           id={'select_all'}
           style={{ display: 'none' }}
-          className='svgcheckinput'
-          onChange={e => this.onSelectAll(e)}
-          ref={r => (this.selectAllCheckbox = r)}
+          className="svgcheckinput"
+          onChange={(e) => this.onSelectAll(e)}
+          ref={(r) => (this.selectAllCheckbox = r)}
         />
-        <label htmlFor={'select_all'} className='svgcheck'>
-          <svg width='16px' height='16px' viewBox='0 0 18 18'>
-            <path d='M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z' />
-            <polyline points='1 9 7 14 15 4' />
+        <label htmlFor={'select_all'} className="svgcheck">
+          <svg width="16px" height="16px" viewBox="0 0 18 18">
+            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z" />
+            <polyline points="1 9 7 14 15 4" />
           </svg>
         </label>
       </div>
@@ -273,7 +273,7 @@ class TicketsContainer extends React.Component {
                 />
                 <PageTitleButton
                   fontAwesomeIcon={'fa-refresh'}
-                  onButtonClick={e => {
+                  onButtonClick={(e) => {
                     e.preventDefault()
                     this.props
                       .unloadTickets()
@@ -282,7 +282,7 @@ class TicketsContainer extends React.Component {
                 />
                 <PageTitleButton
                   fontAwesomeIcon={'fa-filter'}
-                  onButtonClick={e => {
+                  onButtonClick={(e) => {
                     e.preventDefault()
                     this.props.showModal('FILTER_TICKET')
                   }}
@@ -292,7 +292,7 @@ class TicketsContainer extends React.Component {
                   <Dropdown small={true} width={120}>
                     <DropdownItem text={'Create'} onClick={() => this.props.showModal('CREATE_TICKET')} />
                     <DropdownSeparator />
-                    {this.props.ticketStatuses.map(s => (
+                    {this.props.ticketStatuses.map((s) => (
                       <DropdownItem
                         key={s.get('_id')}
                         text={'Set ' + s.get('name')}
@@ -308,29 +308,29 @@ class TicketsContainer extends React.Component {
                 <div className={'uk-float-right'}>
                   <div
                     id={'ticket-search-box'}
-                    className='search-box uk-float-left nb'
+                    className="search-box uk-float-left nb"
                     style={{ marginTop: 8, paddingLeft: 0 }}
                   >
                     <input
-                      type='text'
-                      id='tickets_Search'
+                      type="text"
+                      id="tickets_Search"
                       placeholder={'Search'}
                       className={'ticket-top-search'}
                       value={this.searchTerm}
-                      onChange={e => this.onSearchTermChanged(e)}
-                      onFocus={e => this._onSearchFocus(e)}
+                      onChange={(e) => this.onSearchTermChanged(e)}
+                      onFocus={(e) => this._onSearchFocus(e)}
                     />
                   </div>
                 </div>
               </div>
-              <SearchResults target={'#ticket-search-box'} ref={r => (this.searchContainer = r)} />
+              <SearchResults target={'#ticket-search-box'} ref={(r) => (this.searchContainer = r)} />
             </div>
           }
         />
         <PageContent padding={0} paddingBottom={0} extraClass={'uk-position-relative'}>
           {/*<SpinLoader active={this.props.loading} />*/}
           <Table
-            tableRef={ref => (this.ticketsTable = ref)}
+            tableRef={(ref) => (this.ticketsTable = ref)}
             style={{ margin: 0 }}
             extraClass={'pDataTable'}
             stickyHeader={true}
@@ -345,7 +345,7 @@ class TicketsContainer extends React.Component {
               <TableHeader key={6} width={175} text={'Customer'} />,
               <TableHeader key={7} text={'Assignee'} />,
               <TableHeader key={8} width={110} text={'Due Date'} />,
-              <TableHeader key={9} text={'Updated'} />
+              <TableHeader key={9} text={'Updated'} />,
             ]}
           >
             {!this.props.loading && this.props.tickets.size < 1 && (
@@ -357,8 +357,8 @@ class TicketsContainer extends React.Component {
             )}
             {this.props.loading && loadingItems}
             {!this.props.loading &&
-              this.props.tickets.map(ticket => {
-                const status = this.props.ticketStatuses.find(s => s.get('_id') === ticket.getIn(['status', '_id']))
+              this.props.tickets.map((ticket) => {
+                const status = this.props.ticketStatuses.find((s) => s.get('_id') === ticket.getIn(['status', '_id']))
 
                 const assignee = () => {
                   const a = ticket.get('assignee')
@@ -395,7 +395,7 @@ class TicketsContainer extends React.Component {
                       isOverdue() ? 'overdue' : ''
                     }`}
                     clickable={true}
-                    onClick={e => {
+                    onClick={(e) => {
                       const td = e.target.closest('td')
                       const input = td.getElementsByTagName('input')
                       if (input.length > 0) return false
@@ -407,17 +407,25 @@ class TicketsContainer extends React.Component {
                       style={{ borderColor: ticket.getIn(['priority', 'htmlColor']), padding: '18px 15px' }}
                     >
                       <input
-                        type='checkbox'
+                        type="checkbox"
                         id={`c_${ticket.get('_id')}`}
                         data-ticket={ticket.get('_id')}
-                        style={{ display: 'none' }}
-                        onChange={e => this.onTicketCheckChanged(e, ticket.get('_id'))}
-                        className='svgcheckinput'
+                        style={{
+                          opacity: 0,
+                          width: 0,
+                          height: 0,
+                          position: 'absolute',
+                          zIndex: -1,
+                        }}
+                        onChange={(e) => this.onTicketCheckChanged(e, ticket.get('_id'))}
+                        className="svgcheckinput"
+                        aria-hidden="false"
+                        aria-label={`Select ticket with UID ${ticket.get('uid')}`}
                       />
-                      <label htmlFor={`c_${ticket.get('_id')}`} className='svgcheck'>
-                        <svg width='16px' height='16px' viewBox='0 0 18 18'>
-                          <path d='M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z' />
-                          <polyline points='1 9 7 14 15 4' />
+                      <label htmlFor={`c_${ticket.get('_id')}`} className="svgcheck">
+                        <svg width="16px" height="16px" viewBox="0 0 18 18">
+                          <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z" />
+                          <polyline points="1 9 7 14 15 4" />
                         </svg>
                       </label>
                     </TableCell>
@@ -429,8 +437,16 @@ class TicketsContainer extends React.Component {
                         {status == null ? 'U' : status.get('name')[0].toUpperCase()}
                       </span>
                     </TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.get('uid')}</TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.get('subject')}</TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href="#" aria-label={`Show ticket with UID ${ticket.get('uid')}`}>
+                        {ticket.get('uid')}
+                      </a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href="#" aria-label={`Show ticket with Subject ${ticket.get('subject')}`}>
+                        {ticket.get('subject')}
+                      </a>
+                    </TableCell>
                     <TableCell className={'vam nbb'}>
                       {helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat())}
                     </TableCell>
@@ -470,17 +486,17 @@ TicketsContainer.propTypes = {
   common: PropTypes.object.isRequired,
   filter: PropTypes.object,
   ticketStatuses: PropTypes.object.isRequired,
-  fetchTicketStatus: PropTypes.func.isRequired
+  fetchTicketStatus: PropTypes.func.isRequired,
 }
 
 TicketsContainer.defaultProps = {
   view: 'active',
   page: '0',
   prevEnabled: true,
-  nextEnabled: true
+  nextEnabled: true,
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   tickets: state.ticketsState.tickets,
   totalCount: state.ticketsState.totalCount,
   prevPage: state.ticketsState.prevPage,
@@ -488,7 +504,7 @@ const mapStateToProps = state => ({
   loading: state.ticketsState.loading,
   common: state.common,
   socket: state.shared.socket,
-  ticketStatuses: state.ticketsState.ticketStatuses
+  ticketStatuses: state.ticketsState.ticketStatuses,
 })
 
 export default connect(mapStateToProps, {
@@ -499,5 +515,5 @@ export default connect(mapStateToProps, {
   ticketUpdated,
   fetchSearchResults,
   fetchTicketStatus,
-  showModal
+  showModal,
 })(TicketsContainer)
