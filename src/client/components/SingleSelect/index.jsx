@@ -21,7 +21,7 @@ import helpers from 'lib/helpers'
 
 class SingleSelect extends React.Component {
   value = ''
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     if (this.props.defaultValue) this.value = this.props.defaultValue
@@ -29,7 +29,7 @@ class SingleSelect extends React.Component {
     this.onSelectChange = this.onSelectChange.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     helpers.UI.selectize()
     const $select = $(this.select)
 
@@ -39,12 +39,12 @@ class SingleSelect extends React.Component {
     if (this.props.defaultValue) this.value = this.props.defaultValue
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const selectize = this.select.selectize
     if (selectize) selectize.destroy()
   }
 
-  onSelectChange (e) {
+  onSelectChange(e) {
     if (e.target.value === '') {
       if (this.props.onSelectChange && this.props.multiple) this.props.onSelectChange(e, [])
       else return
@@ -56,13 +56,13 @@ class SingleSelect extends React.Component {
     if (this.value && this.props.onSelectChange) this.props.onSelectChange(e, this.value)
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.defaultValue !== this.props.defaultValue && !this.value) this.value = this.props.defaultValue
     if (prevProps.value !== this.props.value && this.props.value !== this.value) this.value = this.props.value
     this.updateSelectizeItems()
   }
 
-  updateSelectizeItems () {
+  updateSelectizeItems() {
     if (this.select && this.select.selectize) {
       const self = this
       // Remove any options that were removed from Items array
@@ -89,7 +89,7 @@ class SingleSelect extends React.Component {
     }
   }
 
-  render () {
+  render() {
     let width = '100%'
 
     if (this.props.width) width = this.props.width
@@ -98,6 +98,9 @@ class SingleSelect extends React.Component {
 
     return (
       <div className={'uk-clearfix'}>
+        <label className='uk-form-label' htmlFor={this.props.id}>
+          {this.props.label}
+        </label>
         <div className='uk-width-1-1 uk-float-right' style={{ paddingRight: '10px', width: width }}>
           <select
             className='selectize'
@@ -107,12 +110,24 @@ class SingleSelect extends React.Component {
             data-md-selectize-inline
             data-md-selectize-notextbox={this.props.showTextbox ? 'false' : 'true'}
             value={value}
-            onChange={() => {}}
+tabIndex={0}
+            role='listbox'
+            onChange={this.onSelectChange}
             disabled={this.props.disabled}
             data-md-selectize-bottom='true'
             multiple={this.props.multiple}
             data-md-selectize-top-offset='-32'
-          />
+            id={this.props.id}
+            aria-labelledby={`${this.props.id}-label`}
+            aria-live="polite"
+            aria-multiselectable={this.props.multiple ? "true" : "false"}
+          >
+            {this.props.items.map((item, index) => (
+              <option key={index} value={item.value} aria-selected={value.includes(item.value)}>
+                {item.text}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     )
@@ -127,7 +142,10 @@ SingleSelect.propTypes = {
   defaultValue: PropTypes.string,
   value: PropTypes.string,
   disabled: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  onSelectChange: PropTypes.func
+  onSelectChange: PropTypes.func,
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  'aria-label': PropTypes.string.isRequired,
 }
 
 SingleSelect.defaultProps = {

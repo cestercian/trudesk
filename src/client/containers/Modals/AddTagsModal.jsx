@@ -97,7 +97,7 @@ class AddTagsModal extends React.Component {
 
     return (
       <BaseModal options={{ bgclose: false }}>
-        <div className={'uk-clearfix'}>
+        <div className={'uk-clearfix'}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      >
           <h5 style={{ fontWeight: 300 }}>Add Tags</h5>
           <div>
             <form className='nomargin' onSubmit={e => this.onSubmit(e)}>
