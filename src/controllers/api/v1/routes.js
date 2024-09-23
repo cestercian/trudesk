@@ -113,12 +113,12 @@ module.exports = function (middleware, router, controllers) {
   router.delete('/api/v1/tags/:id', apiv1, isAgentOrAdmin, apiCtrl.tags.deleteTag)
 
   // Public Tickets
-  const checkCaptcha = middleware.checkCaptcha
+  // const checkCaptcha = middleware.checkCaptcha
   const checkOrigin = middleware.checkOrigin
 
-  router.post('/api/v1/public/users/checkemail', checkCaptcha, checkOrigin, apiCtrl.users.checkEmail)
-  router.post('/api/v1/public/tickets/create', checkCaptcha, checkOrigin, apiCtrl.tickets.createPublicTicket)
-  router.post('/api/v1/public/account/create', checkCaptcha, checkOrigin, apiCtrl.users.createPublicAccount)
+  router.post('/api/v1/public/users/checkemail', checkOrigin, apiCtrl.users.checkEmail)
+  router.post('/api/v1/public/tickets/create', checkOrigin, apiCtrl.tickets.createPublicTicket)
+  router.post('/api/v1/public/account/create', checkOrigin, apiCtrl.users.createPublicAccount)
 
   // Groups
   router.get('/api/v1/groups', apiv1, apiCtrl.groups.get)

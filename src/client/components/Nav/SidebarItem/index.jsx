@@ -11,54 +11,91 @@
  *  Updated:    1/20/19 4:46 PM
  *  Copyright (c) 2014-2019. All rights reserved.
  */
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import Helpers from 'modules/helpers'
 
-// import './style.sass';
-
 class NavButton extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
+    this.announcementRef = React.createRef()
   }
 
-  componentDidUpdate () {
+  componentDidMount() {
+    this.setupClickHandler()
+  }
+
+  componentDidUpdate() {
     Helpers.UI.bindAccordion()
     Helpers.UI.tetherUpdate()
+    this.setupClickHandler()
   }
 
-  renderAnchorLink () {
+  setupClickHandler() {
+    const anchor = this.anchorRef.querySelector('a')
+    if (anchor) {
+      anchor.removeEventListener('click', this.handleClick)
+      anchor.addEventListener('click', this.handleClick)
+    }
+  }
+
+  handleClick = (event) => {
+    event.preventDefault()
+    const announcement = `Moving to ${this.props.text} page`
+    if (this.announcementRef.current) {
+      this.announcementRef.current.innerHTML = announcement
+      setTimeout(() => {
+        this.announcementRef.current.innerHTML = ''
+      }, 1000)
+    }
+    setTimeout(() => {
+      window.location.href = this.props.href
+    }, 100)
+  }
+
+  renderAnchorLink() {
     return (
       <a href={this.props.href} className={this.props.class} target={this.props.target || ''}>
-        <i className='material-icons'>{this.props.icon}</i>
+        <i className='material-icons' aria-hidden='true'>{this.props.icon}</i>
         {this.props.text}
       </a>
     )
   }
 
-  render () {
-    if (this.props.hasSubmenu) {
-      return (
+  render() {
+    const { hasSubmenu, active, subMenuTarget, children } = this.props
+
+    return (
+      <>
         <li
-          className={'hasSubMenu' + (this.props.active ? ' active' : '')}
-          data-nav-id={this.props.subMenuTarget}
+          ref={(el) => this.anchorRef = el}
+          className={`${hasSubmenu ? 'hasSubMenu' : ''} ${active ? 'active' : ''}`}
+          data-nav-id={subMenuTarget}
           data-nav-accordion
-          data-nav-accordion-target={'side-nav-accordion-' + this.props.subMenuTarget}
+          data-nav-accordion-target={hasSubmenu ? `side-nav-accordion-${subMenuTarget}` : undefined}
         >
           {this.renderAnchorLink()}
-          {this.props.children}
+          {children}
         </li>
-      )
-    } else {
-      return (
-        <li className={this.props.active ? ' active ' : ''}>
-          {this.renderAnchorLink()}
-          {this.props.children}
-        </li>
-      )
-    }
+        <div 
+          ref={this.announcementRef}
+          aria-live="assertive" 
+          className="sr-only" 
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: '0',
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: '0'
+          }}
+        ></div>
+      </>
+    )
   }
 }
 

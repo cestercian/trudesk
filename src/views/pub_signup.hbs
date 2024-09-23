@@ -304,11 +304,11 @@
                     <label for="user-cPassword">Confirm Password</label>
                     <input id="user-cPassword" name="user-cPassword" class="md-input" type="password" required />
                 </div>
-                <div class="uk-margin-medium-bottom">
+                {{!-- <div class="uk-margin-medium-bottom">
                     <div id="captchaImage" style="margin-bottom: 10px;"></div>
                     <label for="captcha">Please enter the letters you see above.</label>
                     <input type="text" id="captcha" name="captcha" class="md-input" required />
-                </div>
+                </div> --}}
                 <div style="width: 25%; float: left;">
                     <button class="btn md-btn md-btn-wave md-btn-primary1" type="button" data-prev>Back</button>
                 </div>
@@ -400,7 +400,7 @@
 
         $(document).ready(function() {
             helpers.init();
-            getCaptcha();
+            {{!-- getCaptcha(); --}}
             var $slides = $('.slides > .slide');
             var totalSlides = 0;
             var activeSlide = 0;
@@ -528,7 +528,7 @@
                     url: '/api/v1/public/users/checkemail',
                     data: {
                         email: userInfoFormData['user-email'],
-                        captcha: $('#captcha').val()
+                        {{!-- captcha: $('#captcha').val() --}}
                     },
                     error: function(e) {
                         $checkEmailBtn.prop('disabled', false).text('Next');
@@ -634,7 +634,7 @@
                 }
             });
 
-            function getCaptcha() {
+            {{!-- function getCaptcha() {
                 $.ajax({
                    method: 'GET',
                     url: '/captcha',
@@ -646,12 +646,12 @@
                        console.error(err);
                     }
                 });
-            }
+            } --}}
 
             function createAccount() {
                 var data = {
                     user: userInfo,
-                    captcha: $('#captcha').val()
+                    {{!-- captcha: $('#captcha').val() --}}
                 };
                 $.ajax({
                     method: 'POST',

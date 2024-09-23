@@ -22,7 +22,7 @@ class SubmenuItem extends React.Component {
         {this.props.hasSeperator && <hr />}
         <li className={this.props.active ? ' active ' : ''}>
           <a href={this.props.href}>
-            <i className='material-icons fa-sub-icon'>{this.props.icon}</i>
+            <i className='material-icons fa-sub-icon' aria-hidden='true'>{this.props.icon}</i>
             {this.props.text}
           </a>
         </li>

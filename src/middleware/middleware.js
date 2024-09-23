@@ -129,25 +129,25 @@ middleware.cache = function (seconds) {
   }
 }
 
-middleware.checkCaptcha = function (req, res, next) {
-  var postData = req.body
-  if (postData === undefined) {
-    return res.status(400).json({ success: false, error: 'Invalid Captcha' })
-  }
+// middleware.checkCaptcha = function (req, res, next) {
+//   var postData = req.body
+//   if (postData === undefined) {
+//     return res.status(400).json({ success: false, error: 'Invalid Captcha' })
+//   }
 
-  var captcha = postData.captcha
-  var captchaValue = req.session.captcha
+//   var captcha = postData.captcha
+//   var captchaValue = req.session.captcha
 
-  if (captchaValue === undefined) {
-    return res.status(400).json({ success: false, error: 'Invalid Captcha' })
-  }
+//   if (captchaValue === undefined) {
+//     return res.status(400).json({ success: false, error: 'Invalid Captcha' })
+//   }
 
-  if (captchaValue.toString() !== captcha.toString()) {
-    return res.status(400).json({ success: false, error: 'Invalid Captcha' })
-  }
+//   if (captchaValue.toString() !== captcha.toString()) {
+//     return res.status(400).json({ success: false, error: 'Invalid Captcha' })
+//   }
 
-  return next()
-}
+//   return next()
+// }
 
 middleware.checkOrigin = function (req, res, next) {
   var origin = req.headers.origin
