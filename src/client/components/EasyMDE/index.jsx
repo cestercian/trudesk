@@ -52,6 +52,11 @@ class EasyMDE extends React.Component {
       this.onTextareaChanged(this.easymde.value())
     })
 
+    this.easymde.codemirror.setOption('extraKeys', {
+      Tab: false,
+      'Shift-Tab': false
+    })
+
     if (this.easymde && this.props.allowImageUpload) {
       if (!this.props.inlineImageUploadUrl) return Log.error('Invalid inlineImageUploadUrl Prop.')
 

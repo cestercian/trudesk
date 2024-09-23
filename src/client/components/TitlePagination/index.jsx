@@ -50,8 +50,8 @@ class TitlePagination extends React.Component {
     const startEnd = TitlePagination.calcStartEnd(currentPage, limit)
 
     return (
-      <div className={'pagination uk-float-left uk-clearfix'} ref={r => (this.parent = r)}>
-        <span className={'pagination-info'}>
+      <div className={'pagination uk-float-left uk-clearfix'} ref={r => (this.parent = r)} role="navigation" aria-label="Pagination">
+        <span className={'pagination-info'} aria-live="polite">
           {TitlePagination.formatNumber(startEnd.start)} - {TitlePagination.formatNumber(startEnd.end)} of{' '}
           {TitlePagination.formatNumber(total)}
         </span>
@@ -61,6 +61,7 @@ class TitlePagination extends React.Component {
               href={prevEnabled ? link(prevPage) : '#'}
               title={'Previous Page'}
               className={'btn md-btn-wave-light' + (!prevEnabled ? ' no-ajaxy' : '')}
+              aria-disabled={!prevEnabled}
             >
               <i className='fa fa-large fa-chevron-left' />
             </a>

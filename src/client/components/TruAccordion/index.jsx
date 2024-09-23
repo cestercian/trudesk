@@ -13,6 +13,7 @@ class TruAccordion extends React.Component {
     super(props)
 
     makeObservable(this)
+    this.headerRef = React.createRef();
   }
 
   componentDidMount () {
@@ -29,9 +30,18 @@ class TruAccordion extends React.Component {
 
     setTimeout(() => {
       this.expandedContentShown = this.expanded
+      if (this.expanded) {
+        this.headerRef.current.focus(); // Focus the header when expanded
+      }
     }, 300)
 
     if (this.props.onExpandedChange) this.props.onExpandedChange(this.expanded)
+  }
+
+  onKeyDown = e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      this.onHeaderClick(e);
+    }
   }
 
   render () {
@@ -41,7 +51,7 @@ class TruAccordion extends React.Component {
 
     return (
       <div className={clsx('truaccordion-wrapper', this.expanded && ' expanded')}>
-        <div className={'truaccordion-header'} role={'button'} onClick={e => this.onHeaderClick(e)}>
+        <div className={'truaccordion-header'} role={'button'} onClick={e => this.onHeaderClick(e)} tabIndex={0} onKeyDown={this.onKeyDown} ref={this.headerRef} aria-expanded={this.expanded} aria-controls="truaccordion-content">
           <div className={'truaccordion-header-content'}>
             <h4>{headerContent}</h4>
             <div className={'arrow'}>
@@ -52,7 +62,7 @@ class TruAccordion extends React.Component {
           </div>
         </div>
         {this.expandedContentShown && (
-          <div className={'truaccordion-content'}>
+          <div id="truaccordion-content" className={'truaccordion-content'} aria-hidden={!this.expanded}>
             <div className={'truaccordion-content-inner'} style={contentStyle}>
               {content}
             </div>

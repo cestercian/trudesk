@@ -399,9 +399,17 @@ class TicketsContainer extends React.Component {
                         type='checkbox'
                         id={`c_${ticket.get('_id')}`}
                         data-ticket={ticket.get('_id')}
-                        style={{ display: 'none' }}
-                        onChange={e => this.onTicketCheckChanged(e, ticket.get('_id'))}
-                        className='svgcheckinput'
+                        style={{
+                          opacity: 0,
+                          width: 0,
+                          height: 0,
+                          position: 'absolute',
+                          zIndex: -1,
+                        }}
+                        onChange={(e) => this.onTicketCheckChanged(e, ticket.get('_id'))}
+                        className="svgcheckinput"
+                        aria-hidden="false"
+                        aria-label={`Select ticket with UID ${ticket.get('uid')}`}
                       />
                       <label htmlFor={`c_${ticket.get('_id')}`} className='svgcheck'>
                         <svg width='16px' height='16px' viewBox='0 0 18 18'>
@@ -418,8 +426,16 @@ class TicketsContainer extends React.Component {
                         {status == null ? 'U' : status.get('name')[0].toUpperCase()}
                       </span>
                     </TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.get('uid')}</TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.get('subject')}</TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href="#" aria-label={`Show ticket with UID ${ticket.get('uid')}`}>
+                        {ticket.get('uid')}
+                      </a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href="#" aria-label={`Show ticket with Subject ${ticket.get('subject')}`}>
+                        {ticket.get('subject')}
+                      </a>
+                    </TableCell>
                     <TableCell className={'vam nbb'}>
                       {helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat())}
                     </TableCell>

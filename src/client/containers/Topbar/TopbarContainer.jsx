@@ -144,78 +144,76 @@ class TopbarContainer extends React.Component {
     return (
       <div>
         {this.props.notice && <NoticeBanner notice={this.props.notice} />}
-        <div className={'uk-grid top-nav'}>
+        <div className={'uk-grid top-nav'} role="navigation" aria-label="Main Navigation">
           <div className='uk-width-1-1'>
-            <div className='top-bar' data-topbar>
+            <div className='top-bar' data-topbar role="banner">
               <div className='title-area uk-float-left'>
                 <div className='logo'>
-                  <img src={viewdata.get('logoImage')} alt='Logo' className={'site-logo'} />
+                  <img src={viewdata.get('logoImage')} alt='Zendalona Logo' className={'site-logo'} />
                 </div>
               </div>
               <section className='top-bar-section uk-clearfix'>
                 <div className='top-menu uk-float-right'>
-                  <ul className='uk-subnav uk-margin-bottom-remove'>
-                    {/* Start Create Ticket Perm */}
+                  <ul className='uk-subnav uk-margin-bottom-remove' role="menubar">
                     {sessionUser && helpers.canUser('tickets:create') && (
-                      <li className='top-bar-icon nopadding'>
-                        <button
+                      <li className='top-bar-icon nopadding' role="none">
+                        <a
                           title={'Create Ticket'}
                           className={'anchor'}
                           onClick={() => this.props.showModal('CREATE_TICKET')}
+                          aria-label='Create Ticket'
+                          role="menuitem"
+                          href='#'
                         >
-                          <i className='material-icons'>&#xE145;</i>
-                        </button>
+                          <i className='material-icons' aria-hidden="true">&#xE145;</i>
+                        </a>
                       </li>
                     )}
                     {sessionUser && helpers.canUser('tickets:create') && (
-                      <li className='top-bar-icon nopadding nohover'>
+                      <li className='top-bar-icon nopadding nohover' aria-hidden="true" role="none">
                         <i className='material-icons separator'>remove</i>
                       </li>
                     )}
-                    {/* End Create Ticket Perm */}
-                    <li className='top-bar-icon'>
+                    <li className='top-bar-icon' role="none">
                       <PDropdownTrigger target={this.conversationsDropdownPartial}>
                         <a
                           title={'Conversations'}
                           className='no-ajaxy uk-vertical-align'
                           onClick={e => TopbarContainer.onConversationsClicked(e)}
+                          role="menuitem"
+                          aria-haspopup="true"
+                          aria-label="Open Conversations"
+                          href='#'
                         >
-                          <i className='material-icons'>question_answer</i>
+                          <i className='material-icons' aria-hidden="true">question_answer</i>
                         </a>
                       </PDropdownTrigger>
                     </li>
-                    <li className='top-bar-icon'>
+                    <li className='top-bar-icon' role="none">
                       <PDropdownTrigger target={this.notificationsDropdownPartial}>
-                        <a title={'Notifications'} className={'no-ajaxy uk-vertical-align'}>
-                          <i className='material-icons'>notifications</i>
+                        <a 
+                          title={'Notifications'} 
+                          className={'no-ajaxy uk-vertical-align'}
+                          role="menuitem"
+                          aria-haspopup="true"
+                          aria-label={`Notifications (${this.notificationCount} unread)`}
+                          href='#'
+                        >
+                          <i className='material-icons' aria-hidden="true">notifications</i>
                           <span
                             className={'alert uk-border-circle label ' + (this.notificationCount < 1 ? 'hide' : '')}
+                            aria-hidden="true"
                           >
                             {this.notificationCount}
                           </span>
                         </a>
                       </PDropdownTrigger>
                     </li>
-                    {/*<li className='top-bar-icon'>*/}
-                    {/*  <OffCanvasTrigger target={'online-user-list'}>*/}
-                    {/*    <a title={'Online Users'} className='no-ajaxy'>*/}
-                    {/*      <i className='material-icons'>people_alt</i>*/}
-                    {/*      <span*/}
-                    {/*        className={*/}
-                    {/*          'online-user-count alert uk-border-circle label ' +*/}
-                    {/*          (this.activeUserCount < 1 ? 'hide' : '')*/}
-                    {/*        }*/}
-                    {/*      >*/}
-                    {/*        {this.activeUserCount}*/}
-                    {/*      </span>*/}
-                    {/*    </a>*/}
-                    {/*  </OffCanvasTrigger>*/}
-                    {/*</li>*/}
-                    <li className='top-bar-icon nopadding nohover'>
+                    <li className='top-bar-icon nopadding nohover' aria-hidden="true" role="none">
                       <i className='material-icons separator'>remove</i>
                     </li>
 
-                    <li className='profile-area profile-name'>
+                    <li className='profile-area profile-name' role="none">
                       <span style={{ fontSize: 16 }}>{sessionUser.fullname}</span>
                       <div className='uk-position-relative uk-display-inline-block'>
                         <PDropdownTrigger target={this.profileDropdownPartial}>
@@ -223,6 +221,9 @@ class TopbarContainer extends React.Component {
                             href='#'
                             title={sessionUser.fullname}
                             className={'profile-pic no-ajaxy uk-vertical-align-middle'}
+                            role="menuitem"
+                            aria-haspopup="true"
+                            aria-label={`${sessionUser.fullname}'s profile menu`}
                           >
                             <Avatar
                               image={sessionUser.image}
@@ -230,6 +231,7 @@ class TopbarContainer extends React.Component {
                               userId={sessionUser._id}
                               size={35}
                               overrideBubbleSize={15}
+                              alt={`${sessionUser.fullname}'s avatar`}
                             />
                           </a>
                         </PDropdownTrigger>
@@ -265,6 +267,7 @@ class TopbarContainer extends React.Component {
     )
   }
 }
+
 
 TopbarContainer.propTypes = {
   socket: PropTypes.object.isRequired,
