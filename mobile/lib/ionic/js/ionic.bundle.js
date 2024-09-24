@@ -14809,7 +14809,7 @@
  *
  * Use this directive to **auto-bootstrap** an AngularJS application. The `ngApp` directive
  * designates the **root element** of the application and is typically placed near the root element
- * of the page - e.g. on the `<body>` or `<html>` tags.
+ * of the page - e.g. on the `<body>` or `<html lang="en">` tags.
  *
  * There are a few things to keep in mind when using `ngApp`:
  * - only one AngularJS application can be auto-bootstrapped per HTML document. The first `ngApp`
@@ -14982,7 +14982,7 @@
    *
    * ```html
    * <!doctype html>
-   * <html>
+   * <html lang="en">
    * <body>
    * <div ng-controller="WelcomeController">
    *   {{greeting}}
@@ -48814,7 +48814,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  * do not rely on DOM nesting structure so that the anchor element appears the same as the starting element (since
  * the cloned element is placed inside of root element which is likely close to the body element).
  *
- * Note that if the root element is on the `<html>` element then the cloned node will be placed inside of body.
+ * Note that if the root element is on the `<html lang="en">` element then the cloned node will be placed inside of body.
  *
  *
  * ## Using $animate in your directive code

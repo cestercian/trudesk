@@ -481,7 +481,7 @@
       if (!iframe.contentDocument) return
 
       iframe.contentDocument.write(
-        '<!DOCTYPE html><html><head><meta charset="UTF-8"><title></title><style type="text/css">html, body { overflow: hidden; }</style></head><body></body></html>'
+        '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title></title><style type="text/css">html, body { overflow: hidden; }</style></head><body></body></html>'
       )
 
       return iframe

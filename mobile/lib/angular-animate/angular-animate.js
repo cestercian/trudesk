@@ -4020,7 +4020,7 @@ var ngAnimateSwapDirective = ['$animate', '$rootScope', function($animate, $root
  * do not rely on DOM nesting structure so that the anchor element appears the same as the starting element (since
  * the cloned element is placed inside of root element which is likely close to the body element).
  *
- * Note that if the root element is on the `<html>` element then the cloned node will be placed inside of body.
+ * Note that if the root element is on the `<html lang="en">` element then the cloned node will be placed inside of body.
  *
  *
  * ## Using $animate in your directive code

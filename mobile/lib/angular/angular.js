@@ -1472,7 +1472,7 @@ function getNgAttribute(element, ngAttr) {
  *
  * Use this directive to **auto-bootstrap** an AngularJS application. The `ngApp` directive
  * designates the **root element** of the application and is typically placed near the root element
- * of the page - e.g. on the `<body>` or `<html>` tags.
+ * of the page - e.g. on the `<body>` or `<html lang="en">` tags.
  *
  * There are a few things to keep in mind when using `ngApp`:
  * - only one AngularJS application can be auto-bootstrapped per HTML document. The first `ngApp`
@@ -1645,7 +1645,7 @@ function angularInit(element, bootstrap) {
  *
  * ```html
  * <!doctype html>
- * <html>
+ * <html lang="en">
  * <body>
  * <div ng-controller="WelcomeController">
  *   {{greeting}}
