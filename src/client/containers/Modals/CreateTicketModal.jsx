@@ -255,6 +255,7 @@ class CreateTicketModal extends React.Component {
               ref={i => (this.priorityLoader = i)}
               style={{ height: '32px', width: '32px', position: 'relative' }}
               className={'hide'}
+              tabIndex={0}
             >
               <SpinLoader
                 style={{ background: 'transparent' }}

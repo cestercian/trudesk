@@ -168,16 +168,16 @@
     <script src="/js/truRequire.js"></script>
 </head>
 <body>
-<div class="alert-message {{#if flash}} {{else}} hide {{/if}} {{#if flash.success}} green {{/if}}">
+<div role="alert" aria-live="polite" class="alert-message {{#if flash}} {{else}} hide {{/if}} {{#if flash.success}} green {{/if}}" >
     <p>{{#if flash.message}} {{{flash.message}}} {{else}} {{{flash}}}{{/if}}</p>
 </div>
 <div class="login-wrapper">
-    <img src="{{pageLogo}}" alt="Logo" class="site-logo-login" />
+    <img src="{{pageLogo}}" alt="Zendalona Logo" class="site-logo-login" />
 
     <div class="loginForm">
         <form id="loginForm" method="post" action="/login" class="uk-form-stacked uk-clearfix">
             <div class="uk-margin-medium-bottom">
-                <label for="login-username">Username</label>
+                <label for="login-username">Email</label>
                 <input id="login-username" name="login-username" class="md-input" type="text" />
             </div>
             <div class="uk-margin-medium-bottom">
@@ -187,7 +187,7 @@
             <button class="btn md-btn md-btn-flat md-btn-wave md-btn-flat-accent" type="submit">Login</button>
         </form>
         {{#if allowUserRegistration}}
-            <hr>
+            <hr aria-hidden="true">
             <a id="allowUserRegistration" href="/signup" class="no-ajaxy left">Create an Account.</a>
         {{/if}}
         {{#if mailerEnabled}}
