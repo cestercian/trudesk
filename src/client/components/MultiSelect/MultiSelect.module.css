@@ -1,0 +1,27 @@
+.multiSelect {
+  width: 100%;
+}
+
+.multiSelect fieldset {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.multiSelect legend {
+  padding: 0 5px;
+  font-weight: bold;
+}
+
+.option {
+  margin-bottom: 5px;
+}
+
+.option label {
+  margin-left: 5px;
+}
+
+.multiSelect fieldset:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

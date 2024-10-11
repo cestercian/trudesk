@@ -1,0 +1,35 @@
+.singleSelect {
+  position: relative;
+}
+
+.nativeSelect {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.nativeSelect:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.nativeSelect:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Custom arrow */
+.singleSelect::after {
+  content: '\25BC';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
