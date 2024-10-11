@@ -28,29 +28,35 @@ class BaseModal extends React.Component {
     }
     this.clearModal = this.clearModal.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
+    this.modalRef = React.createRef() 
+    this.headingRef = React.createRef()
   }
 
   componentDidMount () {
     this.setState(
       {
-        modal: UIKit.modal(this.modal, this.props.options)
+        modal: UIKit.modal(this.modalRef.current, this.props.options)
       },
       () => {
         this.state.modal.show()
-        $(this.modal).focus()
-        $(this.modal).on('hide.uk.modal', this.clearModal)
-        this.focusableElements = this.modal.querySelectorAll('a[href], button, textarea, input, select')
+        if (this.headingRef.current) {
+          this.headingRef.current.focus()
+        } else {
+          this.modalRef.current.focus()
+        }
+        $(this.modalRef.current).on('hide.uk.modal', this.clearModal)
+        this.focusableElements = this.modalRef.current.querySelectorAll('a[href], button, textarea, input, select')
         this.firstFocusableElement = this.focusableElements[0]
         this.lastFocusableElement = this.focusableElements[this.focusableElements.length - 1]
-        this.modal.addEventListener('keydown', this.handleKeyDown)
+        this.modalRef.current.addEventListener('keydown', this.handleKeyDown)
       }
     )
   }
 
   componentWillUnmount() {
     if (this.state.modal) {
-      $(this.modal).off('hide.uk.modal', this.clearModal)
-      this.modal.removeEventListener('keydown', this.handleKeyDown)
+      $(this.modalRef.current).off('hide.uk.modal', this.clearModal)
+      this.modalRef.current.removeEventListener('keydown', this.handleKeyDown)
     }
   }
 
@@ -87,12 +93,17 @@ class BaseModal extends React.Component {
   }
 
   render () {
+    const { title } = this.props
     return (
       <div
         id={'uk-modal'}
         className={'uk-modal' + (this.props.parentExtraClass ? ' ' + this.props.parentExtraClass : '')}
-        ref={i => (this.modal = i)}
+        ref={this.modalRef} 
         data-modal-tag={this.props.modalTag}
+        tabIndex="-1" 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
         <div
           className={
@@ -101,6 +112,16 @@ class BaseModal extends React.Component {
             (this.props.extraClass ? ' ' + this.props.extraClass : '')
           }
         >
+          {title && (
+            <h2 
+              id="modal-title" 
+              ref={this.headingRef} 
+              tabIndex="-1"
+              className="uk-modal-title"
+            >
+              {title}
+            </h2>
+          )}
           {this.props.children}
         </div>
       </div>
@@ -116,7 +137,8 @@ BaseModal.propTypes = {
   clearModal: PropTypes.func.isRequired,
   parentExtraClass: PropTypes.string,
   extraClass: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+  title: PropTypes.string // Add this line
 }
 
 export default connect(
