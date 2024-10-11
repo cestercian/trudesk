@@ -19,12 +19,28 @@ import clsx from 'clsx'
 class PDropDown extends React.Component {
   dropRef = createRef()
   pTriggerRef = null
+  srAnnouncerRef = createRef()
 
   constructor (props) {
     super(props)
 
     this.hideDropdownOnMouseUp = this.hideDropdownOnMouseUp.bind(this)
     this.closeOnClick = this.closeOnClick.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  handleKeyDown(e) {
+    if (e.key === 'Escape' && this.dropRef.current && this.dropRef.current.classList.contains('pDropOpen')) {
+      this.closeOnClick()
+    }
   }
 
   hideDropdownOnMouseUp (e) {
@@ -32,6 +48,7 @@ class PDropDown extends React.Component {
       if (!this.dropRef.current.contains(e.target) && !this.pTriggerRef.contains(e.target)) {
         document.removeEventListener('mouseup', this.hideDropdownOnMouseUp)
         this.dropRef.current.classList.remove('pDropOpen')
+        this.dropRef.current.setAttribute('aria-expanded', 'false')
       }
     }
   }
@@ -40,6 +57,10 @@ class PDropDown extends React.Component {
     if (this.dropRef.current) {
       document.removeEventListener('mouseup', this.hideDropdownOnMouseUp)
       this.dropRef.current.classList.remove('pDropOpen')
+      this.dropRef.current.setAttribute('aria-expanded', 'false')
+      if (this.pTriggerRef) {
+        this.pTriggerRef.focus()
+      }
     }
   }
 
@@ -55,7 +76,7 @@ class PDropDown extends React.Component {
       const ref = this.dropRef.current
       if (ref.classList.contains('pDropOpen')) {
         ref.classList.remove('pDropOpen')
-
+        ref.setAttribute('aria-expanded', 'false')
         return true
       }
 
@@ -120,6 +141,13 @@ class PDropDown extends React.Component {
         ref.style.left = left
         ref.style.top = top
         ref.classList.add('pDropOpen')
+        ref.setAttribute('aria-expanded', 'true')
+        ref.focus()
+
+        // Announce to screen readers that the dropdown is open
+        if (this.srAnnouncerRef.current) {
+          this.srAnnouncerRef.current.textContent = 'Dropdown is now open'
+        }
 
         this.props.onShow()
       }
@@ -145,37 +173,50 @@ class PDropDown extends React.Component {
       isListItems
     } = this.props
     return (
-      <div
-        id={this.props.id}
-        ref={this.dropRef}
-        className={clsx('p-dropdown', leftArrow && 'p-dropdown-left', !showArrow && 'p-dropdown-hide-arrow', className)}
-        data-override={override}
-        data-top-offset={topOffset}
-        data-left-offset={leftOffset}
-        style={{ minHeight, minWidth }}
-      >
-        {showTitlebar && (
-          <div className='actions'>
-            {titleHref && <a href={titleHref}>{title}</a>}
-            {!titleHref && <span style={{ paddingLeft: '5px' }}>{title}</span>}
-            {rightComponent && <div className='uk-float-right'>{rightComponent}</div>}
-          </div>
-        )}
-        {isListItems && (
-          <div className='items close-on-click'>
-            <ul>{children}</ul>
-          </div>
-        )}
-        {!isListItems && <div>{children}</div>}
-        {footerComponent && (
-          <div
-            className={'bottom-actions actions uk-float-left'}
-            style={{ borderBottom: 'none', borderTop: '1px solid rgba(0,0,0,0.2)' }}
-          >
-            {footerComponent}
-          </div>
-        )}
-      </div>
+      <>
+        <div
+          id={this.props.id}
+          ref={this.dropRef}
+          className={clsx('p-dropdown', leftArrow && 'p-dropdown-left', !showArrow && 'p-dropdown-hide-arrow', className)}
+          data-override={override}
+          data-top-offset={topOffset}
+          data-left-offset={leftOffset}
+          style={{ minHeight, minWidth }}
+          role="menu"
+          aria-labelledby={`${this.props.id}-trigger`}
+          aria-expanded="false"
+          tabIndex="-1"
+        >
+          {showTitlebar && (
+            <div className='actions'>
+              {titleHref && <a href={titleHref}>{title}</a>}
+              {!titleHref && <span style={{ paddingLeft: '5px' }}>{title}</span>}
+              {rightComponent && <div className='uk-float-right'>{rightComponent}</div>}
+            </div>
+          )}
+          {isListItems && (
+            <div className='items close-on-click'>
+              <ul role="menu">{children}</ul>
+            </div>
+          )}
+          {!isListItems && <div>{children}</div>}
+          {footerComponent && (
+            <div
+              className={'bottom-actions actions uk-float-left'}
+              style={{ borderBottom: 'none', borderTop: '1px solid rgba(0,0,0,0.2)' }}
+            >
+              {footerComponent}
+            </div>
+          )}
+        </div>
+        <div
+          ref={this.srAnnouncerRef}
+          aria-live="polite"
+          aria-atomic="true"
+          className="sr-only"
+          style={{ position: 'absolute', height: '1px', width: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: '0' }}
+        />
+      </>
     )
   }
 }

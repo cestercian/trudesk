@@ -155,6 +155,40 @@ class CreateTicketModal extends React.Component {
     //   .toArray()
   }
 
+  // Add this method to your component
+  handlePriorityKeyDown = (e, index) => {
+    const lastIndex = this.priorities.length - 1;
+    
+    switch(e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault();
+        this.selectedPriority = this.priorities[(index + 1) % this.priorities.length]._id;
+        this.focusRadioButton((index + 1) % this.priorities.length);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault();
+        this.selectedPriority = this.priorities[index === 0 ? lastIndex : index - 1]._id;
+        this.focusRadioButton(index === 0 ? lastIndex : index - 1);
+        break;
+      case ' ':
+      case 'Enter':
+        e.preventDefault();
+        this.selectedPriority = this.priorities[index]._id;
+        break;
+      default:
+        break;
+    }
+  }
+
+  focusRadioButton(index) {
+    const radioButtons = this.priorityWrapper.querySelectorAll('input[type="radio"]');
+    if (radioButtons[index]) {
+      radioButtons[index].focus();
+    }
+  }
+
   render () {
     const { shared, viewdata } = this.props
     const allowAgentUserTickets =
@@ -180,7 +214,7 @@ class CreateTicketModal extends React.Component {
       return { text: tag.get('name'), value: tag.get('_id') }
     })
     return (
-      <BaseModal {...this.props} options={{ bgclose: false }}>
+      <BaseModal {...this.props} options={{ bgclose: false }} title="Create Ticket">
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
             <label>Subject</label>
@@ -250,46 +284,57 @@ class CreateTicketModal extends React.Component {
             </Grid>
           </div>
           <div className='uk-margin-medium-bottom'>
-            <label className={'uk-form-label'}>Priority</label>
-            <div
-              ref={i => (this.priorityLoader = i)}
-              style={{ height: '32px', width: '32px', position: 'relative' }}
-              className={'hide'}
-              tabIndex={0}
-            >
-              <SpinLoader
-                style={{ background: 'transparent' }}
-                spinnerStyle={{ width: '24px', height: '24px' }}
-                active={true}
-              />
-            </div>
-            <div ref={i => (this.priorityWrapper = i)} className={'uk-clearfix'}>
-              {this.priorities.map(priority => {
-                return (
-                  <div key={priority._id} className={'uk-float-left'}>
-                    <span className={'icheck-inline'}>
-                      <input
-                        id={'p___' + priority._id}
-                        name={'priority'}
-                        type='radio'
-                        className={'with-gap'}
-                        value={priority._id}
-                        onChange={e => {
-                          this.onPriorityRadioChange(e)
+            <fieldset>
+              <legend className={'uk-form-label'}>Priority</legend>
+              <div
+                ref={i => (this.priorityLoader = i)}
+                style={{ height: '32px', width: '32px', position: 'relative' }}
+                className={'hide'}
+                aria-hidden="true"
+              >
+                <SpinLoader
+                  style={{ background: 'transparent' }}
+                  spinnerStyle={{ width: '24px', height: '24px' }}
+                  active={true}
+                />
+              </div>
+              <div 
+                ref={i => (this.priorityWrapper = i)} 
+                className={'uk-clearfix'} 
+                role="radiogroup" 
+                aria-label="Select Priority"
+              >
+                {this.priorities.map((priority, index) => (
+                  <div key={priority._id} tabIndex={0}>
+                    <input
+                      type="radio"
+                      id={`priority_${priority._id}`}
+                      name="priority"
+                      value={priority._id}
+                      checked={this.selectedPriority === priority._id}
+                      onChange={e => this.onPriorityRadioChange(e)}
+                      onKeyDown={(e) => this.handlePriorityKeyDown(e, index)}
+                      role="radio"
+                      aria-checked={this.selectedPriority === priority._id}
+                    />
+                    <label 
+                      htmlFor={`priority_${priority._id}`} 
+                      className={'uk-margin-small-left'}
+                    >
+                      <span 
+                        className='uk-badge' 
+                        style={{ 
+                          backgroundColor: priority.htmlColor,
+                          color: this.getContrastYIQ(priority.htmlColor)
                         }}
-                        checked={this.selectedPriority === priority._id}
-                        data-md-icheck
-                      />
-                      <label htmlFor={'p___' + priority._id} className={'mb-10 inline-label'}>
-                        <span className='uk-badge' style={{ backgroundColor: priority.htmlColor }}>
-                          {priority.name}
-                        </span>
-                      </label>
-                    </span>
+                      >
+                        {priority.name}
+                      </span>
+                    </label>
                   </div>
-                )
-              })}
-            </div>
+                ))}
+              </div>
+            </fieldset>
           </div>
           <div className='uk-margin-medium-bottom'>
             <span>Description</span>
@@ -315,6 +360,16 @@ class CreateTicketModal extends React.Component {
         </form>
       </BaseModal>
     )
+  }
+
+  // Add this method to determine text color based on background color
+  getContrastYIQ(hexcolor) {
+    hexcolor = hexcolor.replace("#", "");
+    var r = parseInt(hexcolor.substr(0,2),16);
+    var g = parseInt(hexcolor.substr(2,2),16);
+    var b = parseInt(hexcolor.substr(4,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? 'black' : 'white';
   }
 }
 
