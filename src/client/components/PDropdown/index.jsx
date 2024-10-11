@@ -144,7 +144,6 @@ class PDropDown extends React.Component {
         ref.setAttribute('aria-expanded', 'true')
         ref.focus()
 
-        // Announce to screen readers that the dropdown is open
         if (this.srAnnouncerRef.current) {
           this.srAnnouncerRef.current.textContent = 'Dropdown is now open'
         }

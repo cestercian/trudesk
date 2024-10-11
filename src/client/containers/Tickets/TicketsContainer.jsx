@@ -348,22 +348,13 @@ class TicketsContainer extends React.Component {
             {!this.props.loading &&
               this.props.tickets.map(ticket => {
                 const status = this.props.ticketStatuses.find(s => s.get('_id') === ticket.get('status').get('_id'))
-
-                const assignee = () => {
-                  const a = ticket.get('assignee')
-                  return !a ? '--' : a.get('fullname')
-                }
-
+                const assignee = ticket.get('assignee') ? ticket.getIn(['assignee', 'fullname']) : 'Data not available'
                 const updated = ticket.get('updated')
-                  ? helpers.formatDate(ticket.get('updated'), helpers.getShortDateFormat()) +
-                    ', ' +
-                    helpers.formatDate(ticket.get('updated'), helpers.getTimeFormat())
-                  : '--'
-
+                  ? `${helpers.formatDate(ticket.get('updated'), helpers.getShortDateFormat())}, ${helpers.formatDate(ticket.get('updated'), helpers.getTimeFormat())}`
+                  : 'Data not available'
                 const dueDate = ticket.get('dueDate')
                   ? helpers.formatDate(ticket.get('dueDate'), helpers.getShortDateFormat())
-                  : '--'
-
+                  : 'Data not available'
                 const isOverdue = () => {
                   if (!this.props.common.viewdata.get('showOverdue') || [2, 3].indexOf(ticket.get('status')) !== -1)
                     return false
@@ -380,36 +371,24 @@ class TicketsContainer extends React.Component {
                 return (
                   <TableRow
                     key={ticket.get('_id')}
-                    className={`ticket-${status == null ? 'unknonwn' : status.get('name')} ${
-                      isOverdue() ? 'overdue' : ''
-                    }`}
-                    clickable={true}
-                    onClick={e => {
-                      const td = e.target.closest('td')
-                      const input = td.getElementsByTagName('input')
-                      if (input.length > 0) return false
-                      History.pushState(null, `Ticket-${ticket.get('uid')}`, `/tickets/${ticket.get('uid')}`)
-                    }}
+                    className={`ticket-${status ? status.get('name') : 'unknown'} ${isOverdue() ? 'overdue' : ''}`}
                   >
-                    <TableCell
-                      className={'ticket-priority nbb vam'}
-                      style={{ borderColor: ticket.getIn(['priority', 'htmlColor']), padding: '18px 15px' }}
-                    >
+                    <TableCell className={'ticket-priority nbb vam'} style={{ borderColor: ticket.getIn(['priority', 'htmlColor']) }}>
                       <input
                         type='checkbox'
                         id={`c_${ticket.get('_id')}`}
                         data-ticket={ticket.get('_id')}
-                        style={{
-                          opacity: 0,
-                          width: 0,
-                          height: 0,
-                          position: 'absolute',
-                          zIndex: -1,
-                        }}
                         onChange={(e) => this.onTicketCheckChanged(e, ticket.get('_id'))}
                         className="svgcheckinput"
-                        aria-hidden="false"
-                        aria-label={`Select ticket with UID ${ticket.get('uid')}`}
+                        aria-label={`Select ticket ${ticket.get('uid')}`}
+                        tabIndex="0"
+                        style={{
+                          position: 'absolute',
+                          opacity: 0,
+                          cursor: 'pointer',
+                          height: 0,
+                          width: 0
+                        }}
                       />
                       <label htmlFor={`c_${ticket.get('_id')}`} className='svgcheck'>
                         <svg width='16px' height='16px' viewBox='0 0 18 18'>
@@ -421,29 +400,39 @@ class TicketsContainer extends React.Component {
                     <TableCell className={`ticket-status vam nbb uk-text-center`}>
                       <span
                         className={'uk-display-inline-block'}
-                        style={{ backgroundColor: status == null ? '#000' : status.get('htmlColor') }}
+                        style={{ backgroundColor: status ? status.get('htmlColor') : '#000' }}
+                        aria-label={`Status: ${status ? status.get('name') : 'Unknown'}`}
+                        tabIndex="0"
                       >
-                        {status == null ? 'U' : status.get('name')[0].toUpperCase()}
+                        {status ? status.get('name')[0].toUpperCase() : 'U'}
                       </span>
                     </TableCell>
                     <TableCell className={'vam nbb'}>
-                      <a href="#" aria-label={`Show ticket with UID ${ticket.get('uid')}`}>
-                        {ticket.get('uid')}
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{ticket.get('uid')}</a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{ticket.get('subject')}</a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">
+                        {helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat())}
                       </a>
                     </TableCell>
                     <TableCell className={'vam nbb'}>
-                      <a href="#" aria-label={`Show ticket with Subject ${ticket.get('subject')}`}>
-                        {ticket.get('subject')}
-                      </a>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{ticket.getIn(['owner', 'fullname']) || 'Data not available'}</a>
                     </TableCell>
                     <TableCell className={'vam nbb'}>
-                      {helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat())}
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{ticket.getIn(['group', 'name']) || 'Data not available'}</a>
                     </TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.getIn(['owner', 'fullname'])}</TableCell>
-                    <TableCell className={'vam nbb'}>{ticket.getIn(['group', 'name'])}</TableCell>
-                    <TableCell className={'vam nbb'}>{assignee()}</TableCell>
-                    <TableCell className={'vam nbb'}>{dueDate}</TableCell>
-                    <TableCell className={'vam nbb'}>{updated}</TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{assignee}</a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{dueDate}</a>
+                    </TableCell>
+                    <TableCell className={'vam nbb'}>
+                      <a href={`/tickets/${ticket.get('uid')}`} tabIndex="0">{updated}</a>
+                    </TableCell>
                   </TableRow>
                 )
               })}
