@@ -54,14 +54,23 @@ const SingleSelect = forwardRef((props, ref) => {
   }))
 
   const onSelectChange = (e) => {
-    const newValue = props.multiple
-      ? Array.from(e.target.selectedOptions, option => option.value)
-      : e.target.value
+    let newValue;
+    if (props.multiple) {
+      const selectedValue = e.target.value;
+      newValue = [...value];
+      if (e.target.checked) {
+        newValue.push(selectedValue);
+      } else {
+        newValue = newValue.filter(v => v !== selectedValue);
+      }
+    } else {
+      newValue = e.target.value;
+    }
 
-    setValue(newValue)
+    setValue(newValue);
 
     if (props.onSelectChange) {
-      props.onSelectChange(e, newValue)
+      props.onSelectChange(e, newValue);
     }
   }
 
@@ -70,26 +79,45 @@ const SingleSelect = forwardRef((props, ref) => {
   return (
     <div className={'uk-clearfix'}>
       <div className='uk-width-1-1 uk-float-right' style={{ paddingRight: '10px', width: width }}>
-        <select
-          ref={selectRef}
-          className='selectize'
-          value={value}
-          onChange={onSelectChange}
-          disabled={props.disabled}
-          multiple={props.multiple}
-          style={{ width: '100%' }}
-        >
-          {props.showTextbox && <option value="">Select...</option>}
-          {props.items.map(item => (
-            <option key={item.value} value={item.value}>
-              {item.text}
-            </option>
-          ))}
-        </select>
+        {props.multiple ? (
+          <div className="uk-form-controls uk-margin-small-top">
+            {props.items.map(item => (
+              <label key={item.value} className="uk-form-label">
+                <input
+                  className="uk-checkbox"
+                  type="checkbox"
+                  value={item.value}
+                  checked={value.includes(item.value)}
+                  onChange={onSelectChange}
+                  disabled={props.disabled}
+                /> {item.text}
+              </label>
+            ))}
+          </div>
+        ) : (
+          <select
+            ref={selectRef}
+            className='selectize'
+            value={value}
+            onChange={onSelectChange}
+            disabled={props.disabled}
+            style={{ width: '100%' }}
+          >
+            {props.showTextbox && <option value="">Select...</option>}
+            {props.items.map(item => (
+              <option key={item.value} value={item.value}>
+                {item.text}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
     </div>
   )
 })
+
+// Add display name to resolve linter error
+SingleSelect.displayName = 'SingleSelect';
 
 SingleSelect.propTypes = {
   width: PropTypes.string,
