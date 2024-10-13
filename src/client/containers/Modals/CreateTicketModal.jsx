@@ -96,8 +96,8 @@ class CreateTicketModal extends React.Component {
       })
   }
 
-  onPriorityRadioChange (e) {
-    this.selectedPriority = e.target.value
+  onPriorityChange = (e) => {
+    this.selectedPriority = e.target.value;
   }
 
   onFormSubmit (e) {
@@ -156,36 +156,25 @@ class CreateTicketModal extends React.Component {
   }
 
   // Add this method to your component
-  handlePriorityKeyDown = (e, index) => {
-    const lastIndex = this.priorities.length - 1;
-    
+  handlePriorityKeyDown = (e) => {
+    const options = Array.from(e.target.options);
+    const currentIndex = options.findIndex(option => option.value === this.selectedPriority);
+
     switch(e.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-        e.preventDefault();
-        this.selectedPriority = this.priorities[(index + 1) % this.priorities.length]._id;
-        this.focusRadioButton((index + 1) % this.priorities.length);
-        break;
-      case 'ArrowLeft':
       case 'ArrowUp':
         e.preventDefault();
-        this.selectedPriority = this.priorities[index === 0 ? lastIndex : index - 1]._id;
-        this.focusRadioButton(index === 0 ? lastIndex : index - 1);
+        if (currentIndex > 0) {
+          this.selectedPriority = options[currentIndex - 1].value;
+        }
         break;
-      case ' ':
-      case 'Enter':
+      case 'ArrowDown':
         e.preventDefault();
-        this.selectedPriority = this.priorities[index]._id;
+        if (currentIndex < options.length - 1) {
+          this.selectedPriority = options[currentIndex + 1].value;
+        }
         break;
       default:
         break;
-    }
-  }
-
-  focusRadioButton(index) {
-    const radioButtons = this.priorityWrapper.querySelectorAll('input[type="radio"]');
-    if (radioButtons[index]) {
-      radioButtons[index].focus();
     }
   }
 
@@ -300,39 +289,20 @@ class CreateTicketModal extends React.Component {
               </div>
               <div 
                 ref={i => (this.priorityWrapper = i)} 
-                className={'uk-clearfix'} 
-                role="radiogroup" 
-                aria-label="Select Priority"
+                className={'uk-clearfix'}
               >
-                {this.priorities.map((priority, index) => (
-                  <div key={priority._id} tabIndex={0}>
-                    <input
-                      type="radio"
-                      id={`priority_${priority._id}`}
-                      name="priority"
-                      value={priority._id}
-                      checked={this.selectedPriority === priority._id}
-                      onChange={e => this.onPriorityRadioChange(e)}
-                      onKeyDown={(e) => this.handlePriorityKeyDown(e, index)}
-                      role="radio"
-                      aria-checked={this.selectedPriority === priority._id}
-                    />
-                    <label 
-                      htmlFor={`priority_${priority._id}`} 
-                      className={'uk-margin-small-left'}
-                    >
-                      <span 
-                        className='uk-badge' 
-                        style={{ 
-                          backgroundColor: priority.htmlColor,
-                          color: this.getContrastYIQ(priority.htmlColor)
-                        }}
-                      >
-                        {priority.name}
-                      </span>
-                    </label>
-                  </div>
-                ))}
+                <select
+                  value={this.selectedPriority}
+                  onChange={e => this.onPriorityChange(e)}
+                  onKeyDown={e => this.handlePriorityKeyDown(e)}
+                  style={{ width: '100%', maxWidth: '300px' }}
+                >
+                  {this.priorities.map((priority, index) => (
+                    <option key={priority._id} value={priority._id}>
+                      {priority.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </fieldset>
           </div>
