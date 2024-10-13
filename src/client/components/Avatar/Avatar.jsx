@@ -30,8 +30,10 @@ class Avatar extends React.Component {
     this.onlineBubbleRef = React.createRef()
     this.overlayRef = React.createRef()
     this.imageUploadInput = React.createRef()
+    this.avatarRef = React.createRef()
 
     this.onOnlineStatusUpdate = this.onOnlineStatusUpdate.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
   componentDidMount () {
@@ -90,7 +92,7 @@ class Avatar extends React.Component {
   onUploadImageClicked (e) {
     e.preventDefault()
     if (this.imageUploadInput.current) {
-      this.imageUploadInput.current.click('click')
+      this.imageUploadInput.current.click()
     }
   }
 
@@ -117,6 +119,13 @@ class Avatar extends React.Component {
         console.error(error)
         helpers.UI.showSnackbar(`Error: ${error.message}`, true)
       })
+  }
+
+  handleKeyDown (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      this.onUploadImageClicked(e)
+    }
   }
 
   render () {
@@ -149,10 +158,17 @@ class Avatar extends React.Component {
     return (
       <Fragment>
         <div
+          ref={this.avatarRef}
           className='relative uk-clearfix uk-float-left uk-display-inline-block'
           style={wrapperStyle}
           onMouseOver={() => this.onMouseOver()}
           onMouseOut={() => this.onMouseOut()}
+          onFocus={() => this.onMouseOver()}
+          onBlur={() => this.onMouseOut()}
+          tabIndex={enableImageUpload ? 0 : -1}
+          role={enableImageUpload ? 'button' : undefined}
+          aria-label={enableImageUpload ? 'Upload profile picture' : undefined}
+          onKeyDown={this.handleKeyDown}
         >
           {enableImageUpload && (
             <>
@@ -164,6 +180,7 @@ class Avatar extends React.Component {
                   hidden={true}
                   accept={'image/*'}
                   onChange={e => this.onImageInputChange(e)}
+                  aria-label="Choose profile picture"
                 />
               </form>
               <div
@@ -188,7 +205,7 @@ class Avatar extends React.Component {
                 }}
                 onClick={e => this.onUploadImageClicked(e)}
               >
-                <i className={'material-icons'} style={{ color: '#fff' }}>
+                <i className={'material-icons'} style={{ color: '#fff' }} aria-hidden="true">
                   edit
                 </i>
               </div>
@@ -198,7 +215,7 @@ class Avatar extends React.Component {
             className='profile-pic uk-border-circle'
             style={{ height: size, width: size }}
             src={`/uploads/users/${image || 'defaultProfile.jpg'}`}
-            alt=''
+            alt={`${this.props.username || 'User'}'s profile picture`}
           />
           {showOnlineBubble && (
             <span
@@ -210,6 +227,7 @@ class Avatar extends React.Component {
                 'uk-border-circle'
               )}
               style={{ height: bubbleSize, width: bubbleSize }}
+              aria-hidden="true"
             />
           )}
         </div>

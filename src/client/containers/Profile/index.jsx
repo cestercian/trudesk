@@ -246,25 +246,25 @@ class ProfileContainer extends React.Component {
   }
 
   render () {
-    // return (
-    //   <div>
-    //     <PageTitle title={'Dashboard'} />
-    //     <PageContent>
-    //       <RGrid />
-    //     </PageContent>
-    //   </div>
-    // )
     if (!this.props.sessionUser) return <div />
 
     const InfoItem = ({ label, prop, paddingLeft, paddingRight, isRequired, onUpdate }) => {
       return (
         <div style={{ width: '33%', paddingRight: paddingRight, paddingLeft: paddingLeft }}>
-          <label style={{ cursor: 'default', fontSize: '13px', fontWeight: 400, marginRight: 15 }}>
+          <label id={`label-${label.toLowerCase().replace(/\s/g, '-')}`} style={{ cursor: 'default', fontSize: '13px', fontWeight: 400, marginRight: 15 }}>
             {label}
-            {isRequired && <span style={{ color: 'red' }}>*</span>}
+            {isRequired && <span style={{ color: 'red' }} aria-hidden="true">*</span>}
+            {isRequired && <span className="sr-only">(Required)</span>}
           </label>
           <Spacer top={5} bottom={0} />
-          {this.editingProfile && <Input defaultValue={prop || ''} onChange={onUpdate} />}
+          {this.editingProfile && (
+            <Input 
+              name={label}
+              defaultValue={prop || ''} 
+              onChange={onUpdate} 
+              aria-labelledby={`label-${label.toLowerCase().replace(/\s/g, '-')}`}
+            />
+          )}
           {!this.editingProfile && (
             <p
               style={{
@@ -275,6 +275,7 @@ class ProfileContainer extends React.Component {
                 textOverflow: 'ellipsis',
                 overflow: 'hidden'
               }}
+              aria-labelledby={`label-${label.toLowerCase().replace(/\s/g, '-')}`}
             >
               {prop || '-'}
             </p>
@@ -338,8 +339,14 @@ class ProfileContainer extends React.Component {
                     onClick={() => {
                       this.fullname = this.props.sessionUser.fullname
                       this.editingProfile = !this.editingProfile
+                      // Announce edit mode status
+                      const announcement = this.editingProfile ? "Edit mode activated, use tab to navigate." : "Edit mode deactivated, use tab to navigate."
+                      this.announcementRef.innerText = announcement
                     }}
+                    aria-label={this.editingProfile ? "Finish editing profile" : "Start editing profile"}
                   />
+                  {/* Add this line to create an invisible element for announcements */}
+                  <div aria-live="polite" className="sr-only" ref={ref => this.announcementRef = ref}></div>
                 </div>
               </>
             }
@@ -355,7 +362,7 @@ class ProfileContainer extends React.Component {
                     <TruTabSelector selectorId={1} label={'Security'} />
                     <TruTabSelector selectorId={2} label={'Preferences'} />
                   </TruTabSelectors>
-                  <TruTabSection sectionId={0} active={true} style={{ minHeight: 480 }}>
+                  <TruTabSection selectorId={0} active={true} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 900, padding: '10px 25px' }}>
                       <h4 style={{ marginBottom: 15 }}>Work Information</h4>
                       <div style={{ display: 'flex' }}>
@@ -430,13 +437,19 @@ class ProfileContainer extends React.Component {
                             style={'primary'}
                             small={true}
                             onClick={e => this.onSaveProfileClicked(e)}
+                            aria-label="Save profile changes"
                           />
-                          <Button text={'Cancel'} small={true} onClick={() => (this.editingProfile = false)} />
+                          <Button 
+                            text={'Cancel'} 
+                            small={true} 
+                            onClick={() => (this.editingProfile = false)}
+                            aria-label="Cancel profile changes"
+                          />
                         </div>
                       )}
                     </div>
                   </TruTabSection>
-                  <TruTabSection sectionId={1} style={{ minHeight: 480 }}>
+                  <TruTabSection selectorId={1} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 600, padding: '25px 0' }}>
                       <TruAccordion
                         headerContent={'Change Password'}
@@ -612,15 +625,17 @@ class ProfileContainer extends React.Component {
                       />
                     </div>
                   </TruTabSection>
-                  <TruTabSection sectionId={2} style={{ minHeight: 480 }}>
+                  <TruTabSection selectorId={2} style={{ minHeight: 480 }}>
                     <div style={{ maxWidth: 450, padding: '10px 25px' }}>
                       <h4 style={{ marginBottom: 15 }}>UI Preferences</h4>
                       <div className={'uk-clearfix uk-margin-large-bottom'}>
-                        <label style={{ fontSize: '13px' }}>Timezone</label>
+                        <label htmlFor="timezone-select" style={{ fontSize: '13px' }}>Timezone</label>
                         <SingleSelect
+                          id="timezone-select"
                           items={this._getTimezones()}
                           defaultValue={this.timezone || undefined}
                           onSelectChange={e => this.onTimezoneSelectChange(e)}
+                          aria-label="Select timezone"
                         />
                       </div>
                       <div>
@@ -630,6 +645,7 @@ class ProfileContainer extends React.Component {
                           small={true}
                           type={'button'}
                           onClick={e => this.onSaveProfileClicked(e)}
+                          aria-label="Save UI preferences"
                         />
                       </div>
                     </div>

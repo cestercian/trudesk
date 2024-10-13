@@ -22,8 +22,10 @@ class Input extends React.Component {
     if (this.props.onChange) this.props.onChange(this.value)
   }
 
+
   render () {
-    const { name, type, defaultValue } = this.props
+    const { name, type, defaultValue, labelledby } = this.props
+    console.log(name) 
     return (
       <div>
         <input
@@ -31,6 +33,8 @@ class Input extends React.Component {
           name={name}
           type={type}
           defaultValue={defaultValue}
+          aria-labelledby={labelledby}
+          aria-label={name}
           onChange={e => this.handleChange(e)}
         />
       </div>
@@ -42,6 +46,7 @@ Input.propTypes = {
   name: PropTypes.string,
   type: PropTypes.string,
   defaultValue: PropTypes.string,
+  labelledby: PropTypes.string,
   onChange: PropTypes.func
 }
 
