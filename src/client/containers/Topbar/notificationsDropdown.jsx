@@ -77,13 +77,13 @@ class NotificationsDropdownPartial extends React.Component {
         topOffset={-4}
         leftOffset={4}
         rightComponent={
-          <a className={'hoverUnderline no-ajaxy'} onClick={e => this.clearNotificationsClicked(e)}>
+          <a href='#' className={'hoverUnderline no-ajaxy'} onClick={e => this.clearNotificationsClicked(e)}>
             Clear Notifications
           </a>
         }
         footerComponent={
           <div className={'uk-text-center' + (this.notifications.length < 1 ? ' hide' : '')}>
-            <a className={'no-ajaxy hoverUnderline'} onClick={this.props.onViewAllNotificationsClick}>
+            <a href='#' className={'no-ajaxy hoverUnderline'} onClick={this.props.onViewAllNotificationsClick}>
               View All Notifications
             </a>
           </div>
@@ -100,7 +100,7 @@ class NotificationsDropdownPartial extends React.Component {
             .format(shortDateFormat)
           return (
             <li key={notification._id}>
-              <a className='item no-ajaxy' onClick={e => this.markNotificationRead(e, notification)}>
+              <a href='#' className='item no-ajaxy' onClick={e => this.markNotificationRead(e, notification)}>
                 <div className='uk-clearfix'>
                   {notification.unread && <div className={'messageUnread'} />}
                   {notification.type === 0 && (

@@ -76,6 +76,7 @@ class ConversationsDropdownPartial extends React.Component {
         footerComponent={
           <div className={'uk-text-center' + (this.conversations.length < 1 ? ' hide' : '')}>
             <a
+              href='#'
               className={'no-ajaxy hoverUnderline'}
               onClick={() => {
                 History.pushState(null, null, '/messages')
@@ -101,6 +102,7 @@ class ConversationsDropdownPartial extends React.Component {
               return (
                 <li key={conversation._id}>
                   <a
+                    href='#'
                     className='no-ajaxy messageNotification uk-position-relative'
                     onClick={e => this.onConversationClicked(e, conversation._id)}
                   >
