@@ -18,7 +18,7 @@ class DropdownSeparator extends React.Component {
   render () {
     return (
       <li>
-        <hr style={{ margin: '5px 0' }} />
+        <hr aria-hidden="true" style={{ margin: '5px 0' }} />
       </li>
     )
   }

@@ -21,6 +21,7 @@ class Dropdown extends React.Component {
     const className = (small ? ' uk-dropdown-small ' : ' ') + (extraClass || '')
     return (
       <div
+        tabIndex={0}
         className={'nopadding-left nopadding-right uk-dropdown uk-margin-top-remove' + className}
         style={{ width: width, minWidth: width }}
       >

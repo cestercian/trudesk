@@ -50,33 +50,36 @@ class TitlePagination extends React.Component {
     const startEnd = TitlePagination.calcStartEnd(currentPage, limit)
 
     return (
-      <div className={'pagination uk-float-left uk-clearfix'} ref={r => (this.parent = r)} role="navigation" aria-label="Pagination">
-        <span className={'pagination-info'} aria-live="polite">
-          {TitlePagination.formatNumber(startEnd.start)} - {TitlePagination.formatNumber(startEnd.end)} of{' '}
-          {TitlePagination.formatNumber(total)}
-        </span>
-        <ul className={'button-group'}>
-          <li className='pagination'>
+      <nav className={'pagination uk-float-left uk-clearfix'} ref={r => (this.parent = r)} aria-label="Pagination">
+        <div className={'pagination-info'} aria-live="polite">
+          Showing {TitlePagination.formatNumber(startEnd.start)} - {TitlePagination.formatNumber(startEnd.end)} of{' '}
+          {TitlePagination.formatNumber(total)} items
+        </div>
+        <ul className={'button-group'} role="list">
+          <li className='pagination' role="listitem">
             <a
               href={prevEnabled ? link(prevPage) : '#'}
-              title={'Previous Page'}
               className={'btn md-btn-wave-light' + (!prevEnabled ? ' no-ajaxy' : '')}
+              aria-label="Go to previous page"
               aria-disabled={!prevEnabled}
             >
-              <i className='fa fa-large fa-chevron-left' />
+              <i className='fa fa-large fa-chevron-left' aria-hidden="true" />
+              <span className="sr-only">Previous Page</span>
             </a>
           </li>
-          <li className='pagination'>
+          <li className='pagination' role="listitem">
             <a
               href={nextEnabled ? link(nextPage) : '#'}
-              title={'Next Page'}
               className={'btn md-btn-wave-light' + (!nextEnabled ? ' no-ajaxy' : '')}
+              aria-label="Go to next page"
+              aria-disabled={!nextEnabled}
             >
-              <i className='fa fa-large fa-chevron-right' />
+              <i className='fa fa-large fa-chevron-right' aria-hidden="true" />
+              <span className="sr-only">Next Page</span>
             </a>
           </li>
         </ul>
-      </div>
+      </nav>
     )
   }
 }
