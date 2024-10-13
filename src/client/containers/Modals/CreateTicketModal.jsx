@@ -43,6 +43,12 @@ class CreateTicketModal extends React.Component {
   @observable selectedPriority = ''
   issueText = ''
 
+  state = {
+    subjectError: null,
+    priorityError: null,
+    issueError: null,
+  }
+
   constructor (props) {
     super(props)
     makeObservable(this)
@@ -97,7 +103,14 @@ class CreateTicketModal extends React.Component {
   }
 
   onPriorityChange = (e) => {
-    this.selectedPriority = e.target.value;
+    const selectedValue = e.target.value;
+    this.selectedPriority = selectedValue;
+    
+    if (!selectedValue) {
+      this.setState({ priorityError: 'Please select a priority' });
+    } else {
+      this.setState({ priorityError: null });
+    }
   }
 
   onFormSubmit (e) {
@@ -105,29 +118,36 @@ class CreateTicketModal extends React.Component {
     const $form = $(e.target)
 
     const data = {}
-    if (this.issueText.length < 1) return
+    const minSubjectLength = this.props.viewdata.get('ticketSettings').get('minSubject')
+    const minIssueLength = this.props.viewdata.get('ticketSettings').get('minIssue')
+
+    // Validate subject
+    if (e.target.subject.value.length < minSubjectLength) {
+      this.setState({ subjectError: `Subject must contain at least ${minSubjectLength} characters.` })
+      return
+    } else {
+      this.setState({ subjectError: null })
+    }
+
+    // Validate priority
+    if (!this.selectedPriority) {
+      this.setState({ priorityError: 'Please select a priority' })
+      return
+    } else {
+      this.setState({ priorityError: null })
+    }
+
+    // Validate issue
+    if (this.issueText.length < minIssueLength) {
+      this.setState({ issueError: `Issue must contain at least ${minIssueLength} characters` })
+      return
+    } else {
+      this.setState({ issueError: null })
+    }
+
     const allowAgentUserTickets =
       this.props.viewdata.get('ticketSettings').get('allowAgentUserTickets') &&
       (this.props.shared.sessionUser.role.isAdmin || this.props.shared.sessionUser.role.isAgent)
-
-    const minIssueLength = this.props.viewdata.get('ticketSettings').get('minIssue')
-    let $mdeError
-    const $issueTextbox = $(this.issueMde.element)
-    const $errorBorderWrap = $issueTextbox.parents('.error-border-wrap')
-    if (this.issueText.length < minIssueLength) {
-      $errorBorderWrap.css({ border: '1px solid #E74C3C' })
-      const mdeError = $(
-        `<div class="mde-error uk-float-left uk-text-left">Please enter a valid issue. Issue must contain at least ${minIssueLength} characters</div>`
-      )
-      $mdeError = $issueTextbox.siblings('.editor-statusbar').find('.mde-error')
-      if ($mdeError.length < 1) $issueTextbox.siblings('.editor-statusbar').prepend(mdeError)
-
-      return
-    }
-
-    $errorBorderWrap.css('border', 'none')
-    $mdeError = $issueTextbox.parent().find('.mde-error')
-    if ($mdeError.length > 0) $mdeError.remove()
 
     if (!$form.isValid(null, null, false)) return true
 
@@ -206,17 +226,20 @@ class CreateTicketModal extends React.Component {
       <BaseModal {...this.props} options={{ bgclose: false }} title="Create Ticket">
         <form className={'uk-form-stacked'} onSubmit={e => this.onFormSubmit(e)}>
           <div className='uk-margin-medium-bottom'>
-            <label>Subject</label>
+            <label htmlFor="subject">Subject</label>
             <input
+              id="subject"
               type='text'
               name={'subject'}
               className={'md-input'}
-              data-validation='length'
-              data-validation-length={`min${viewdata.get('ticketSettings').get('minSubject')}`}
-              data-validation-error-msg={`Please enter a valid Subject. Subject must contain at least ${viewdata
-                .get('ticketSettings')
-                .get('minSubject')} characters.`}
+              aria-invalid={this.state.subjectError ? "true" : "false"}
+              aria-describedby="subject-error"
             />
+            {this.state.subjectError && (
+              <div id="subject-error" className="error-message" role="alert">
+                {this.state.subjectError}
+              </div>
+            )}
           </div>
           <div className='uk-margin-medium-bottom'>
             <Grid>
@@ -292,34 +315,57 @@ class CreateTicketModal extends React.Component {
                 className={'uk-clearfix'}
               >
                 <select
+                  id="priority-select"
                   value={this.selectedPriority}
                   onChange={e => this.onPriorityChange(e)}
                   onKeyDown={e => this.handlePriorityKeyDown(e)}
                   style={{ width: '100%', maxWidth: '300px' }}
+                  aria-invalid={this.state.priorityError ? "true" : "false"}
+                  aria-describedby="priority-error"
                 >
+                  <option value="">Select a priority</option>
                   {this.priorities.map((priority, index) => (
                     <option key={priority._id} value={priority._id}>
                       {priority.name}
                     </option>
                   ))}
                 </select>
+                {this.state.priorityError && (
+                  <div id="priority-error" className="error-message" role="alert">
+                    {this.state.priorityError}
+                  </div>
+                )}
               </div>
             </fieldset>
           </div>
           <div className='uk-margin-medium-bottom'>
-            <span>Description</span>
+            <span id="issue-label">Description</span>
             <div className='error-border-wrap uk-clearfix'>
               <EasyMDE
                 ref={i => (this.issueMde = i)}
-                onChange={val => (this.issueText = val)}
+                onChange={val => {
+                  this.issueText = val
+                  if (this.state.issueError && val.length >= this.props.viewdata.get('ticketSettings').get('minIssue')) {
+                    this.setState({ issueError: null })
+                  }
+                }}
                 allowImageUpload={true}
                 inlineImageUploadUrl={'/tickets/uploadmdeimage'}
                 inlineImageUploadHeaders={{ ticketid: 'uploads' }}
+                textareaProps={{
+                  'aria-labelledby': 'issue-label',
+                  'aria-invalid': this.state.issueError ? "true" : "false",
+                  'aria-describedby': 'issue-error'
+                }}
               />
             </div>
+            {this.state.issueError && (
+              <div id="issue-error" className="error-message" role="alert">
+                {this.state.issueError}
+              </div>
+            )}
             <span style={{ marginTop: '6px', display: 'inline-block', fontSize: '11px' }} className={'uk-text-muted'}>
               Please try to be as specific as possible. Please include any details you think may be relevant, such as
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
               troubleshooting steps you've taken.
             </span>
           </div>
