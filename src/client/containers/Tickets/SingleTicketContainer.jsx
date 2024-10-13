@@ -289,7 +289,13 @@ class SingleTicketContainer extends React.Component {
     }
 
     return (
-      <div className={'uk-clearfix uk-position-relative'} style={{ width: '100%', height: '100vh' }}>
+      <div 
+        className={'uk-clearfix uk-position-relative'} 
+        style={{ width: '100%', height: '100vh' }}
+        role="main"
+        aria-label="Ticket Details"
+        tabIndex="0"
+      >
         {!this.ticket && <SpinLoader active={true} />}
         {this.ticket && (
           <Fragment>
@@ -299,7 +305,7 @@ class SingleTicketContainer extends React.Component {
                 style={{ width: 360, maxWidth: 360, minWidth: 360 }}
               >
                 <div className='page-title-border-right relative' style={{ padding: '0 30px' }}>
-                  <p>Ticket #{this.ticket.uid}</p>
+                  <h1>Ticket #{this.ticket.uid}</h1>
                   <StatusSelector
                     ticketId={this.ticket._id}
                     status={this.ticket.status._id}
@@ -311,10 +317,10 @@ class SingleTicketContainer extends React.Component {
                   />
                 </div>
                 {/*  Left Side */}
-                <div className='page-content-left full-height scrollable'>
+                <div className='page-content-left full-height scrollable' role="complementary" aria-label="Ticket Information">
                   <div className='ticket-details-wrap uk-position-relative uk-clearfix'>
                     <div className='ticket-assignee-wrap uk-clearfix' style={{ paddingRight: 30 }}>
-                      <h4>Assignee</h4>
+                      <h2>Assignee</h2>
                       <div className='ticket-assignee uk-clearfix'>
                         {hasTicketUpdate && (
                           <a
@@ -370,10 +376,11 @@ class SingleTicketContainer extends React.Component {
 
                     <div className='uk-width-1-1 padding-left-right-15'>
                       <div className='tru-card ticket-details uk-clearfix'>
+                        <h3>Ticket Details</h3>
                         {/* Type */}
                         <div className='uk-width-1-2 uk-float-left nopadding'>
                           <div className='marginright5'>
-                            <span>Type</span>
+                            <label htmlFor="ticketType">Type</label>
                             {hasTicketUpdate && (
                               <select
                                 value={this.ticket.type._id}
@@ -415,7 +422,7 @@ class SingleTicketContainer extends React.Component {
                         {/* Priority */}
                         <div className='uk-width-1-2 uk-float-left nopadding'>
                           <div className='marginleft5'>
-                            <span>Priority</span>
+                            <label htmlFor="ticketPriority">Priority</label>
                             {hasTicketUpdate && (
                               <select
                                 name='tPriority'
@@ -542,7 +549,7 @@ class SingleTicketContainer extends React.Component {
                     {helpers.canUser('agent:*', true) && (
                       <div className='uk-width-1-1 padding-left-right-15'>
                         <div className='tru-card ticket-details pr-0 pb-0' style={{ height: 250 }}>
-                          Ticket History
+                          <h3>Ticket History</h3>
                           <hr style={{ padding: 0, margin: 0 }} />
                           <div className='history-items scrollable' style={{ paddingTop: 12 }}>
                             {this.ticket.history &&
@@ -565,7 +572,7 @@ class SingleTicketContainer extends React.Component {
                 </div>
               </div>
               {/* Right Side */}
-              <div className='page-message nopadding' style={{ marginLeft: 360 }}>
+              <div className='page-message nopadding' style={{ marginLeft: 360 }} role="region" aria-label="Ticket Comments and Notes">
                 <div className='page-title-right noshadow'>
                   {this.props.common.get('hasThirdParty') && (
                     <div className='page-top-comments uk-float-right'>
@@ -861,6 +868,7 @@ class SingleTicketContainer extends React.Component {
                 </div>
               </div>
             </div>
+            <div aria-live="polite" id="ticket-updates" className="sr-only"></div>
             <OffCanvasEditor primaryLabel={'Save Edit'} ref={r => (this.editorWindow = r)} />
           </Fragment>
         )}

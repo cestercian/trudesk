@@ -317,6 +317,7 @@ class MessagesContainer extends React.Component {
                   <div id='convo-actions' style={{ position: 'absolute', top: 20, right: 15 }}>
                     {!this.userListShown && (
                       <a
+                        href='#'
                         title='Start Conversation'
                         className='no-ajaxy'
                         style={{ display: 'block', height: 28 }}
@@ -329,6 +330,7 @@ class MessagesContainer extends React.Component {
                     )}
                     {this.userListShown && (
                       <a
+                        href='#'
                         className='no-ajaxy'
                         style={{ height: 28, lineHeight: '30px', fontSize: '16px', fontWeight: 300 }}
                         onClick={e => this.hideUserList(e)}
