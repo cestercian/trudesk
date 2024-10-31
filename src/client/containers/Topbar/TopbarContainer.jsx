@@ -205,25 +205,39 @@ class TopbarContainer extends React.Component {
                     {/* the notification icon */}
                     <li className="top-bar-icon" role="none">
                       <PDropdownTrigger target={this.notificationsDropdownPartial}>
-                        <a
-                          id="notification-count" // ID for the notification element
-                          title={'Notifications'}
-                          className={'no-ajaxy uk-vertical-align'}
-                          role="menuitem"
-                          aria-live="polite"
-                          aria-label={`Notifications (${this.notificationCount} unread)`}
-                          href="#"
-                        >
-                          <i className="material-icons" aria-hidden="true">
-                            notifications
-                          </i>
-                          <span
-                            className={'alert uk-border-circle label ' + (this.notificationCount < 1 ? 'hide' : '')}
-                            aria-hidden="true"
+                        {this.notificationCount > 0 ? (
+                          <a
+                            id="notification-count" // ID for the notification element
+                            title="Notifications"
+                            className="no-ajaxy uk-vertical-align"
+                            role="menuitem"
+                            aria-live="polite"
+                            aria-label={`Notifications (${this.notificationCount} unread)`}
+                            href="#"
                           >
-                            {this.notificationCount}
-                          </span>
-                        </a>
+                            <i className="material-icons" aria-hidden="true">
+                              notifications
+                            </i>
+                            <span
+                              className={'alert uk-border-circle label ' + (this.notificationCount < 1 ? 'hide' : '')}
+                              aria-hidden="true"
+                            >
+                              {this.notificationCount}
+                              {console.log(this.notificationCount)}
+                            </span>
+                          </a>
+                        ) : (
+                          <a>
+                            <i className="material-icons" aria-hidden="true">
+                              notifications
+                            </i>
+                            <span
+                              className={'alert uk-border-circle label ' + (this.notificationCount < 1 ? 'hide' : '')}
+                              aria-hidden="true"
+                            ></span>
+                          </a>
+                          // console.log('other case') || null // Fallback case
+                        )}
                       </PDropdownTrigger>
                     </li>
                     {/* // Render the announcement only if notificationCount > 0 */}
