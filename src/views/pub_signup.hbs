@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Trudesk &middot; Sign Up</title>
     <link rel="stylesheet" href="/css/plugins.min.css">
@@ -13,30 +14,36 @@
             justify-content: center;
             align-items: center;
         }
+
         .signup-container {
             width: 400px;
             background: #fff;
             padding: 30px;
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             color: #444;
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
         }
+
         input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 3px;
         }
+
         button {
             width: 100%;
             padding: 10px;
@@ -47,22 +54,27 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+
         button:hover {
             background: #f15849;
         }
+
         .error {
             color: #e74c3c;
             font-size: 14px;
             margin-top: 5px;
         }
+
         .login-button {
             background: #3498db;
         }
+
         .login-button:hover {
             background: #2980b9;
         }
     </style>
 </head>
+
 <body>
     <div class="signup-container">
         <h2>Create Account</h2>
@@ -91,11 +103,11 @@
 
     <script src="/js/vendor.js"></script>
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var form = document.getElementById('signupForm');
             var errorMessage = document.getElementById('errorMessage');
 
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 errorMessage.textContent = '';
 
@@ -124,21 +136,22 @@
                     },
                     body: JSON.stringify(data)
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Account created successfully. Please log in.');
-                        window.location.href = '/login';
-                    } else {
-                        errorMessage.textContent = data.error || 'An error occurred. Please try again.';
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    errorMessage.textContent = 'An error occurred. Please try again.';
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Account created successfully. Please log in.');
+                            window.location.href = '/login';
+                        } else {
+                            errorMessage.textContent = data.error || 'An error occurred. Please try again.';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        errorMessage.textContent = 'An error occurred. Please try again.';
+                    });
             });
         });
     </script>
 </body>
+
 </html>
