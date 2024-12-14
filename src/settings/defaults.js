@@ -212,7 +212,7 @@ function downloadWin32MongoDBTools (callback) {
       var unzipper = require('unzipper')
       var file = fs.createWriteStream(path.join(savePath, filename))
       http
-        .get('http://storage.trudesk.io/tools/' + filename, function (response) {
+        .get('http://fastdl.mongodb.org/tools/db/mongodb-database-tools-windows-x86_64-100.10.0.zip', function (response) {
           response.pipe(file)
           file.on('finish', function () {
             file.close()

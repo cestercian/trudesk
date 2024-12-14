@@ -12,15 +12,15 @@
  *  Copyright (c) 2014-2019. All rights reserved.
  */
 
-import React from 'react'
-import PropTypes from 'prop-types'
-import DropdownTrigger from 'components/Dropdown/DropdownTrigger'
-import Dropdown from 'components/Dropdown'
-import SpinLoader from 'components/SpinLoader'
-import clsx from 'clsx'
+import React from 'react';
+import PropTypes from 'prop-types';
+import DropdownTrigger from 'components/Dropdown/DropdownTrigger';
+import Dropdown from 'components/Dropdown';
+import SpinLoader from 'components/SpinLoader';
+import clsx from 'clsx';
 
 class TruCard extends React.Component {
-  render () {
+  render() {
     return (
       <div
         className={clsx(
@@ -44,7 +44,7 @@ class TruCard extends React.Component {
         >
           {this.props.showMoveHandle && (
             <div style={{ cursor: 'move', position: 'absolute', top: 2, right: 8 }}>
-              <i className='material-icons'>drag_handle</i>
+              <i className="material-icons">drag_handle</i>
             </div>
           )}
           {this.props.header && (
@@ -52,10 +52,10 @@ class TruCard extends React.Component {
               {this.props.menu && (
                 <div className={'tru-card-head-menu'}>
                   <DropdownTrigger pos={'bottom-right'} mode={'click'}>
-                    <i className='material-icons tru-icon'>more_vert</i>
+                    <i className="material-icons tru-icon">more_vert</i>
                     <Dropdown small={true}>
-                      {this.props.menu.map(child => {
-                        return child
+                      {this.props.menu.map((child) => {
+                        return child;
                       })}
                     </Dropdown>
                   </DropdownTrigger>
@@ -71,7 +71,7 @@ class TruCard extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -87,8 +87,8 @@ TruCard.propTypes = {
   showMoveHandle: PropTypes.bool,
   style: PropTypes.object,
   animateLoader: PropTypes.bool,
-  animateDelay: PropTypes.number
-}
+  animateDelay: PropTypes.number,
+};
 
 TruCard.defaultProps = {
   loaderActive: false,
@@ -96,7 +96,7 @@ TruCard.defaultProps = {
   fullSize: true,
   showMoveHandle: false,
   animateLoader: false,
-  animateDelay: 600
-}
+  animateDelay: 600,
+};
 
-export default TruCard
+export default TruCard;
